@@ -68,14 +68,28 @@ class Renderer {
     }
  
     renderFixture(body, fixture) {
-        let xCentre = this.xCentre + body.getPosition().x * this.pxPerM;
-        let yCentre = this.yCentre - body.getPosition().y * this.pxPerM;
+        let cx = this.xCentre + body.getPosition().x * this.pxPerM;
+        let cy = this.yCentre - body.getPosition().y * this.pxPerM;
+
+        this.ctx.beginPath();
+
         let shape = fixture.getShape();
-        if (fixture.getType() == 'circle') {
-            this.ctx.beginPath();
-            this.ctx.arc(xCentre + shape.m_p.x * this.pxPerM, yCentre - shape.m_p.y * this.pxPerM, shape.m_radius * this.pxPerM, 0, Math.PI*2, true);
-            this.ctx.stroke();
+        let type = fixture.getType();
+        if (type == 'circle') {
+            this.ctx.arc(cx + shape.m_p.x * this.pxPerM, cy - shape.m_p.y * this.pxPerM, shape.m_radius * this.pxPerM, 0, Math.PI*2, true);
+        } else if (type == 'polygon') {
+            let p = shape.m_vertices;
+            if (p.length > 1) {
+                this.ctx.moveTo(cx + p[0].x * this.pxPerM, cy - p[0].y * this.pxPerM);
+                for (let i = 1; i < p.length; i++) {
+                    this.ctx.lineTo(cx + p[i].x * this.pxPerM, cy - p[i].y * this.pxPerM);
+                }
+                this.ctx.closePath();
+            }
         }
+
+        this.ctx.fill();
+        this.ctx.stroke();
     }
  
     renderJoint(joint) {

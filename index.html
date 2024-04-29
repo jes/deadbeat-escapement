@@ -10,28 +10,37 @@
 
 <script src="planck.min.js"></script>
 <script src="renderer.js"></script>
+<script src="escapewheel.js"></script>
 
 <script type="text/javascript">
-    const { World, Vec2, Box, Circle, DistanceJoint } = planck;
+    const { World, Vec2, Box, Circle, Polygon, DistanceJoint } = planck;
     const world = new World({
-        gravity: new Vec2(0.0, -10.0),
+        gravity: Vec2(0.0, -9.81),
     });
 
     const renderer = new Renderer(world, 'canvas');
 
     let pivot = world.createBody({
         type: 'static',
-        position: new Vec2(0.0, 0.5),
+        position: Vec2(0.0, 0.5),
     });
 
     let bob = world.createBody({
         type: 'dynamic',
-        position: new Vec2(0.5, -0.5),
+        position: Vec2(0.5, -0.5),
     });
     bob.createFixture({
-        shape: new Circle(0.25, new Vec2(0, 0)),
+        shape: new Circle(0.25, Vec2(0, 0)),
         density: 1.0,
         friction: 0.3,
+    });
+
+    addEscapeWheelFixtures(pivot, {
+        teeth: 15,
+        minorDiameter: 0.4,
+        majorDiameter: 0.6,
+        leadingAngle: 5,
+        trailingAngle: 8,
     });
 
     let joint = world.createJoint(new DistanceJoint({}, bob, pivot, bob.getPosition(), pivot.getPosition()));
