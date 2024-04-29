@@ -11,6 +11,7 @@
 <script src="planck.min.js"></script>
 <script src="renderer.js"></script>
 <script src="escapewheel.js"></script>
+<script src="anchor.js"></script>
 
 <script type="text/javascript">
     const { World, Vec2, Box, Circle, Polygon, DistanceJoint, RevoluteJoint } = planck;
@@ -25,15 +26,19 @@
         position: Vec2(0.0, 0.0),
     });
 
-    let bob = world.createBody({
+    let anchor = world.createBody({
         type: 'dynamic',
-        position: Vec2(0.5, -0.5),
+        position: Vec2(-0.01, 0.46),
     });
-    bob.createFixture({
-        shape: new Circle(0.25, Vec2(0, 0)),
+    addAnchorFixtures(anchor, {
+        // TODO
+    });
+    anchor.createFixture({
+        shape: new Circle(Vec2(0.0, -1.2), 0.25),
         density: 1.0,
         friction: 0.3,
     });
+    anchor.setAngularVelocity(4);
 
     let escapeWheel = world.createBody({
         type: 'dynamic',
@@ -49,10 +54,10 @@
         friction: 0.3,
     });
 
-    let pendulumJoint = world.createJoint(new DistanceJoint({}, bob, fixed, bob.getPosition(), Vec2(0, 0.5)));
+    let pendulumJoint = world.createJoint(new RevoluteJoint({}, anchor, fixed, anchor.getPosition()));
     let escapeWheelJoint = world.createJoint(new RevoluteJoint({
-        maxMotorTorque: 1, // ??
-        motorSpeed: 3, // rads/sec
+        maxMotorTorque: 0.01, // ??
+        motorSpeed: -3, // rads/sec
         enableMotor: true,
     }, fixed, escapeWheel, escapeWheel.getPosition()));
 

@@ -9,7 +9,7 @@
  */
 function addEscapeWheelFixtures(body, params) {
     body.createFixture({
-        shape: new Circle(params.minorDiameter/2, Vec2(0,0)),
+        shape: new Circle(params.minorDiameter/2),
         density: params.density,
         friction: params.friction,
     });

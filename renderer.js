@@ -64,7 +64,7 @@ class Renderer {
 
             // rotate around object centre
             this.ctx.translate(bx, by);
-            this.ctx.rotate(-body.getAngle());
+            this.ctx.rotate(body.getAngle());
             this.ctx.translate(-bx, -by);
 
             // translate to object position
