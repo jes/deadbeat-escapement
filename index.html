@@ -22,7 +22,7 @@
 
     let fixed = world.createBody({
         type: 'static',
-        position: Vec2(0.0, 0.2),
+        position: Vec2(0.0, 0.0),
     });
 
     let bob = world.createBody({
@@ -37,7 +37,7 @@
 
     let escapeWheel = world.createBody({
         type: 'dynamic',
-        position: Vec2(0.0, 0.0),
+        position: Vec2(0.0, 0.5),
     });
     addEscapeWheelFixtures(escapeWheel, {
         teeth: 15,
@@ -51,12 +51,10 @@
 
     let pendulumJoint = world.createJoint(new DistanceJoint({}, bob, fixed, bob.getPosition(), Vec2(0, 0.5)));
     let escapeWheelJoint = world.createJoint(new RevoluteJoint({
-        localAnchorA: Vec2(0,0),
-        localAnchorB: Vec2(0,0),
         maxMotorTorque: 1000, // ??
         motorSpeed: 1, // rads/sec?
         enableMotor: true,
-    }, fixed, escapeWheel));
+    }, fixed, escapeWheel, escapeWheel.getPosition()));
 
 </script>
 </body>
