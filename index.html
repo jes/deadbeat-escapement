@@ -13,16 +13,16 @@
 <script src="escapewheel.js"></script>
 
 <script type="text/javascript">
-    const { World, Vec2, Box, Circle, Polygon, DistanceJoint } = planck;
+    const { World, Vec2, Box, Circle, Polygon, DistanceJoint, RevoluteJoint } = planck;
     const world = new World({
         gravity: Vec2(0.0, -9.81),
     });
 
     const renderer = new Renderer(world, 'canvas');
 
-    let pivot = world.createBody({
+    let fixed = world.createBody({
         type: 'static',
-        position: Vec2(0.0, 0.5),
+        position: Vec2(0.0, 0.2),
     });
 
     let bob = world.createBody({
@@ -35,15 +35,29 @@
         friction: 0.3,
     });
 
-    addEscapeWheelFixtures(pivot, {
+    let escapeWheel = world.createBody({
+        type: 'dynamic',
+        position: Vec2(0.0, 0.0),
+    });
+    addEscapeWheelFixtures(escapeWheel, {
         teeth: 15,
         minorDiameter: 0.4,
         majorDiameter: 0.6,
         leadingAngle: 5,
         trailingAngle: 8,
+        density: 1.0,
+        friction: 0.3,
     });
 
-    let joint = world.createJoint(new DistanceJoint({}, bob, pivot, bob.getPosition(), pivot.getPosition()));
+    let pendulumJoint = world.createJoint(new DistanceJoint({}, bob, fixed, bob.getPosition(), Vec2(0, 0.5)));
+    let escapeWheelJoint = world.createJoint(new RevoluteJoint({
+        localAnchorA: Vec2(0,0),
+        localAnchorB: Vec2(0,0),
+        maxMotorTorque: 1000, // ??
+        motorSpeed: 1, // rads/sec?
+        enableMotor: true,
+    }, fixed, escapeWheel));
+
 </script>
 </body>
 </html>

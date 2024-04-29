@@ -36,6 +36,7 @@ class Renderer {
             // can be resized, recreated, etc. without confusing us
             this.canvas = document.getElementById(this.canvasId);
             this.ctx = canvas.getContext('2d');
+            this.ctx.save();
 
             this.pxPerM = canvas.height / this.viewHeight;
             this.mPerPx = 1.0 / this.pxPerM;
@@ -47,6 +48,8 @@ class Renderer {
             this.ctx.fillStyle = '#45f';
             this.ctx.strokeStyle = '#fff';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+            this.ctx.translate(this.xCentre, this.yCentre);
      
             for (let body = world.getBodyList(); body; body = body.getNext()) {
                 this.renderBody(body);
@@ -55,6 +58,8 @@ class Renderer {
             for (let joint = world.getJointList(); joint; joint = joint.getNext()) {
                 this.renderJoint(joint);
             }
+
+            this.ctx.restore();
         }
  
         // Request a new frame
@@ -68,21 +73,25 @@ class Renderer {
     }
  
     renderFixture(body, fixture) {
-        let cx = this.xCentre + body.getPosition().x * this.pxPerM;
-        let cy = this.yCentre - body.getPosition().y * this.pxPerM;
+        let bx = body.getPosition().x * this.pxPerM;
+        let by = -body.getPosition().y * this.pxPerM;
 
+        this.ctx.save();
+        this.ctx.translate(-bx, by);
+        this.ctx.rotate(body.getAngle());
+        this.ctx.translate(bx, -by);
         this.ctx.beginPath();
 
         let shape = fixture.getShape();
         let type = fixture.getType();
         if (type == 'circle') {
-            this.ctx.arc(cx + shape.m_p.x * this.pxPerM, cy - shape.m_p.y * this.pxPerM, shape.m_radius * this.pxPerM, 0, Math.PI*2, true);
+            this.ctx.arc(bx + shape.m_p.x * this.pxPerM, by - shape.m_p.y * this.pxPerM, shape.m_radius * this.pxPerM, 0, Math.PI*2, true);
         } else if (type == 'polygon') {
             let p = shape.m_vertices;
             if (p.length > 1) {
-                this.ctx.moveTo(cx + p[0].x * this.pxPerM, cy - p[0].y * this.pxPerM);
+                this.ctx.moveTo(bx + p[0].x * this.pxPerM, by - p[0].y * this.pxPerM);
                 for (let i = 1; i < p.length; i++) {
-                    this.ctx.lineTo(cx + p[i].x * this.pxPerM, cy - p[i].y * this.pxPerM);
+                    this.ctx.lineTo(bx + p[i].x * this.pxPerM, by - p[i].y * this.pxPerM);
                 }
                 this.ctx.closePath();
             }
@@ -90,20 +99,26 @@ class Renderer {
 
         this.ctx.fill();
         this.ctx.stroke();
+        this.ctx.restore();
     }
  
     renderJoint(joint) {
-        let posA = joint.m_bodyA.getPosition();
-        let posB = joint.m_bodyB.getPosition();
-        let x1 = this.xCentre + posA.x * this.pxPerM;
-        let y1 = this.yCentre - posA.y * this.pxPerM;
-        let x2 = this.xCentre + posB.x * this.pxPerM;
-        let y2 = this.yCentre - posB.y * this.pxPerM;
+        let type = joint.getType();
+        if (type == 'distance-joint') {
+            let posA = joint.m_bodyA.getPosition().clone().add(joint.m_localAnchorA);
+            let posB = joint.m_bodyB.getPosition().clone().add(joint.m_localAnchorB);
+            let x1 = posA.x * this.pxPerM;
+            let y1 = -posA.y * this.pxPerM;
+            let x2 = posB.x * this.pxPerM;
+            let y2 = -posB.y * this.pxPerM;
 
-        this.ctx.beginPath();
-        this.ctx.moveTo(x1, y1);
-        this.ctx.lineTo(x2, y2);
-        this.ctx.stroke();
+            if (joint.getLength() > 0.01) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(x1, y1);
+                this.ctx.lineTo(x2, y2);
+                this.ctx.stroke();
+            }
+        }
     }
  
     removeBody(body) {
