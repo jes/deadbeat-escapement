@@ -14,10 +14,6 @@ class Renderer {
         this.world = world;
         this.canvasId = canvasId;
 
-        world.on('remove-fixture', this.removeFixture);
-        world.on('remove-joint', this.removeJoint);
-        world.on('remove-body', this.removeBody);
-
         this.loop(0);
     }
  
@@ -35,14 +31,14 @@ class Renderer {
 
             this.world.step(dt);
 
-            this.ctx.fillStyle = '#45f';
+            this.ctx.fillStyle = '#01e';
             this.ctx.strokeStyle = '#fff';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
             this.ctx.translate(this.canvas.width/2, this.canvas.height/2);
 
             let scale = canvas.height / this.viewHeight;
-            this.ctx.lineWidth = 1/scale;
+            this.ctx.lineWidth = 2.0/scale;
             this.ctx.scale(scale, -scale);
      
             for (let body = world.getBodyList(); body; body = body.getNext()) {
@@ -68,7 +64,7 @@ class Renderer {
 
             // rotate around object centre
             this.ctx.translate(bx, by);
-            this.ctx.rotate(body.getAngle());
+            this.ctx.rotate(-body.getAngle());
             this.ctx.translate(-bx, -by);
 
             // translate to object position
@@ -118,17 +114,5 @@ class Renderer {
                 this.ctx.stroke();
             }
         }
-    }
- 
-    removeBody(body) {
-        // Remove body rendering
-    }
- 
-    removeFixture(fixture) {
-        // Remove fixture rendering
-    }
- 
-    removeJoint(joint) {
-        // Remove joint from rendering
     }
 }
