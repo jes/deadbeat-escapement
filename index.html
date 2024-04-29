@@ -6,36 +6,35 @@
 <body>
 <h1>Deadbeat Escapement Simulator</h1>
 
-<button id="testbed-play">Play</button>
-<span id="testbed-status"></span>
-<span id="testbed-info"></span>
+<canvas id="canvas" width="400" height="600"></canvas>
 
-<script src="planck-with-testbed.min.js"></script>
+<script src="planck.min.js"></script>
+<script src="renderer.js"></script>
+
 <script type="text/javascript">
-    const { World, Testbed, Vec2, Box, Circle, DistanceJoint } = planck;
+    const { World, Vec2, Box, Circle, DistanceJoint } = planck;
     const world = new World({
-        gravity: new Vec2(0.0, -500.0),
+        gravity: new Vec2(0.0, -10.0),
     });
 
-    const testbed = Testbed.mount();
-    testbed.start(world);
+    const renderer = new Renderer(world, 'canvas');
 
     let pivot = world.createBody({
         type: 'static',
-        position: new Vec2(0.0, 30.0),
+        position: new Vec2(0.0, 0.5),
     });
 
     let bob = world.createBody({
         type: 'dynamic',
-        position: new Vec2(1.0, 0.0),
+        position: new Vec2(0.5, -0.5),
     });
     bob.createFixture({
-        shape: new Circle(2, new Vec2(0, 0)),
+        shape: new Circle(0.25, new Vec2(0, 0)),
         density: 1.0,
         friction: 0.3,
     });
 
-    let joint = world.createJoint(new DistanceJoint({}, bob, pivot, bob.getWorldCenter(), pivot.getWorldCenter()));
+    let joint = world.createJoint(new DistanceJoint({}, bob, pivot, bob.getPosition(), pivot.getPosition()));
 </script>
 </body>
 </html>
