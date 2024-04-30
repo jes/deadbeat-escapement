@@ -8,54 +8,44 @@ class Renderer {
     ctx = null;
     canvas = null;
 
-    lastTs = null;
-
     constructor(world, canvasId) {
         this.world = world;
         this.canvasId = canvasId;
 
-        this.loop(0);
+        this.draw();
     }
- 
-    // Game loop
-    loop = (ts) => {
-        let dt = (ts - this.lastTs) / 1000.0;
-        this.lastTs = ts;
-        if (dt > 1) dt = 1.0;
-        if (dt > 0) {
-            // reinitialise this.canvas,this.ctx each frame so that the canvas
-            // can be resized, recreated, etc. without confusing us
-            this.canvas = document.getElementById(this.canvasId);
-            this.ctx = canvas.getContext('2d');
-            this.ctx.save();
 
-            this.world.step(dt);
+    draw = () => {
+        // reinitialise this.canvas,this.ctx each frame so that the canvas
+        // can be resized, recreated, etc. without confusing us
+        this.canvas = document.getElementById(this.canvasId);
+        this.ctx = canvas.getContext('2d');
+        this.ctx.save();
 
-            this.ctx.fillStyle = '#01e';
-            this.ctx.strokeStyle = '#fff';
-            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillStyle = '#01e';
+        this.ctx.strokeStyle = '#fff';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-            this.ctx.translate(this.canvas.width/2, this.canvas.height/2);
+        this.ctx.translate(this.canvas.width/2, this.canvas.height/2);
 
-            let scale = canvas.height / this.viewHeight;
-            this.ctx.lineWidth = 2.0/scale;
-            this.ctx.scale(scale, -scale);
-     
-            for (let body = world.getBodyList(); body; body = body.getNext()) {
-                this.renderBody(body);
-            }
-     
-            for (let joint = world.getJointList(); joint; joint = joint.getNext()) {
-                this.renderJoint(joint);
-            }
+        let scale = canvas.height / this.viewHeight;
+        this.ctx.lineWidth = 2.0/scale;
+        this.ctx.scale(scale, -scale);
 
-            this.ctx.restore();
+        for (let body = world.getBodyList(); body; body = body.getNext()) {
+            this.renderBody(body);
         }
- 
+
+        for (let joint = world.getJointList(); joint; joint = joint.getNext()) {
+            this.renderJoint(joint);
+        }
+
+        this.ctx.restore();
+
         // Request a new frame
-        window.requestAnimationFrame(this.loop);
+        window.requestAnimationFrame(this.draw);
     }
- 
+
     renderBody(body) {
         for (let fixture = body.getFixtureList(); fixture; fixture = fixture.getNext()) {
             this.ctx.save();
@@ -74,7 +64,7 @@ class Renderer {
             this.ctx.restore();
         }
     }
- 
+
     renderFixture(body, fixture) {
         this.ctx.beginPath();
 
@@ -96,7 +86,7 @@ class Renderer {
         this.ctx.fill();
         this.ctx.stroke();
     }
- 
+
     renderJoint(joint) {
         let type = joint.getType();
         if (type == 'distance-joint') {
