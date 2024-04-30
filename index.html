@@ -14,7 +14,9 @@
 <script src="anchor.js"></script>
 
 <script type="text/javascript">
-    const { World, Vec2, Box, Circle, Polygon, DistanceJoint, RevoluteJoint } = planck;
+    const { World, Vec2, Box, Circle, Polygon, DistanceJoint, RevoluteJoint, Settings } = planck;
+    Settings.linearSlop = 0.0005;
+    Settings.lengthUnitsPerMeter = 0.1;
     const world = new World({
         gravity: Vec2(0.0, -9.81),
     });
@@ -28,7 +30,8 @@
 
     let anchor = world.createBody({
         type: 'dynamic',
-        position: Vec2(-0.01, 0.46),
+        position: Vec2(-0.01, 0.41),
+        bullet: true,
     });
     addAnchorFixtures(anchor, {
         // TODO
@@ -43,20 +46,21 @@
     let escapeWheel = world.createBody({
         type: 'dynamic',
         position: Vec2(0.0, 0.0),
+        bullet: true,
     });
     addEscapeWheelFixtures(escapeWheel, {
-        teeth: 15,
+        teeth: 13,
         minorDiameter: 0.4,
-        majorDiameter: 0.6,
+        majorDiameter: 0.55,
         leadingAngle: 5,
         trailingAngle: 8,
-        density: 1.0,
+        density: 0.1,
         friction: 0.3,
     });
 
     let pendulumJoint = world.createJoint(new RevoluteJoint({}, anchor, fixed, anchor.getPosition()));
     let escapeWheelJoint = world.createJoint(new RevoluteJoint({
-        maxMotorTorque: 0.01, // ??
+        maxMotorTorque: 0.1, // ??
         motorSpeed: -3, // rads/sec
         enableMotor: true,
     }, fixed, escapeWheel, escapeWheel.getPosition()));

@@ -42,8 +42,8 @@ function addAnchorFixtures(body, params) {
     body.createFixture({
         shape: new Polygon([
             Vec2(0.2, -0.06),
-            Vec2(0.14, -0.14),
-            Vec2(0.16, -0.17),
+            Vec2(0.16, -0.18),
+            Vec2(0.17, -0.19),
             Vec2(0.22, -0.06),
         ]),
         density: 1.0,
