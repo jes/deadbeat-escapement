@@ -18,7 +18,7 @@ class Renderer {
     }
  
     // Game loop
-    loop(ts) {
+    loop = (ts) => {
         let dt = (ts - this.lastTs) / 1000.0;
         this.lastTs = ts;
         if (dt > 1) dt = 1.0;
@@ -53,7 +53,7 @@ class Renderer {
         }
  
         // Request a new frame
-        window.requestAnimationFrame(this.loop.bind(this));
+        window.requestAnimationFrame(this.loop);
     }
  
     renderBody(body) {
