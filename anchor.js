@@ -10,8 +10,8 @@ function addAnchorFixtures(body, params) {
             Vec2(-0.18, -0.12),
             Vec2(0.0, -0.02),
         ]),
-        density: 1.0,
-        friction: 0.3,
+        density: 0,
+        filterMaskBits: 0,
     });
 
     // entry pallet
@@ -22,8 +22,8 @@ function addAnchorFixtures(body, params) {
             Vec2(-0.13, -0.18),
             Vec2(-0.18, -0.12),
         ]),
-        density: 1.0,
-        friction: 0.3,
+        density: 0,
+        friction: params.friction,
     });
 
     // exit pallet arm
@@ -34,8 +34,7 @@ function addAnchorFixtures(body, params) {
             Vec2(0.22, -0.06),
             Vec2(0.23, -0.06),
         ]),
-        density: 1.0,
-        friction: 0.3,
+        density: 0,
     });
 
     // exit pallet
@@ -46,7 +45,7 @@ function addAnchorFixtures(body, params) {
             Vec2(0.16, -0.195),
             Vec2(0.23, -0.06),
         ]),
-        density: 1.0,
-        friction: 0.3,
+        density: 0,
+        friction: params.friction,
     });
 }

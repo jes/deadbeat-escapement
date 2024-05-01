@@ -32,11 +32,11 @@ class Renderer {
         this.ctx.lineWidth = 2.0/scale;
         this.ctx.scale(scale, -scale);
 
-        for (let body = world.getBodyList(); body; body = body.getNext()) {
+        for (let body = this.world.getBodyList(); body; body = body.getNext()) {
             this.renderBody(body);
         }
 
-        for (let joint = world.getJointList(); joint; joint = joint.getNext()) {
+        for (let joint = this.world.getJointList(); joint; joint = joint.getNext()) {
             this.renderJoint(joint);
         }
 

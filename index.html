@@ -2,75 +2,65 @@
 <html>
 <head>
 <title>Deadbeat Escapement Simulator</title>
+<style type="text/css">
+#display {
+    float: left;
+}
+#params {
+    float: left;
+    display: inline-block;
+    max-width: 600px;
+}
+input {
+    width: 50px;
+}
+#params label {
+    display: inline-block;
+    width: 180px;
+    text-align: right;
+}
+</style>
 </head>
 <body>
 <h1>Deadbeat Escapement Simulator</h1>
 
-<canvas id="canvas" width="400" height="600"></canvas>
+<div id="display">
+    <canvas id="canvas" width="400" height="600"></canvas>
+</div>
+
+<div id="params">
+    <label></label> <b>Escape wheel</b><br>
+    <label for="teeth">Teeth:</label> <input id="teeth" type="text"><br>
+    <label for="majordiameter">Major diameter:</label> <input id="majordiameter" type="text"> m<br>
+    <label for="minordiameter">Minor diameter:</label> <input id="minordiameter" type="text"> m<br>
+    <label for="leadingangle">Leading edge angle:</label> <input id="leadingangle" type="text"> deg. from radial<br>
+    <label for="trailingangle">Trailing edge angle:</label> <input id="trailingangle" type="text"> deg. from radial<br>
+
+    <br>
+    <label></label> <b>Anchor</b><br>
+
+    <br>
+    <label></label> <b>Pendulum</b><br>
+    <label for="bobmass">Bob mass:</label> <input id="bobmass" type="text"> kg<br>
+    <label for="rodlength">Rod length:</label> <input id="rodlength" type="text"> m<br>
+
+    <br>
+    <label></label> <b>Simulation</b><br>
+    <label for="torque">Drive torque:</label> <input id="torque" type="text"> Nm<br>
+    <label for="friction">Coefficient of friction:</label> <input id="friction" type="text"><br>
+
+    <br>
+    <label></label>
+    <button id="apply">Apply</button>
+    <button id="reset">Reset</button>
+</div>
 
 <script src="planck.min.js"></script>
 <script src="renderer.js"></script>
 <script src="escapewheel.js"></script>
 <script src="anchor.js"></script>
-
-<script type="text/javascript">
-    const { World, Vec2, Box, Circle, Polygon, DistanceJoint, RevoluteJoint, Settings } = planck;
-    Settings.linearSlop = 0.0005;
-    Settings.lengthUnitsPerMeter = 0.1;
-    const world = new World({
-        gravity: Vec2(0.0, -9.81),
-    });
-
-    const renderer = new Renderer(world, 'canvas');
-
-    let fixed = world.createBody({
-        type: 'static',
-        position: Vec2(0.0, 0.0),
-    });
-
-    let anchor = world.createBody({
-        type: 'dynamic',
-        position: Vec2(-0.01, 0.41),
-        bullet: true,
-    });
-    addAnchorFixtures(anchor, {
-        // TODO
-    });
-    anchor.createFixture({
-        shape: new Circle(Vec2(0.0, -1.2), 0.25),
-        density: 1.0,
-        friction: 0.3,
-    });
-    anchor.setAngularVelocity(4);
-
-    let escapeWheel = world.createBody({
-        type: 'dynamic',
-        position: Vec2(0.0, 0.0),
-        bullet: true,
-    });
-    addEscapeWheelFixtures(escapeWheel, {
-        teeth: 30,
-        minorDiameter: 0.4,
-        majorDiameter: 0.55,
-        leadingAngle: 5,
-        trailingAngle: 8,
-        density: 0.01,
-        friction: 0.3,
-    });
-
-    let pendulumJoint = world.createJoint(new RevoluteJoint({}, anchor, fixed, anchor.getPosition()));
-    let escapeWheelJoint = world.createJoint(new RevoluteJoint({
-        maxMotorTorque: 0.001, // ??
-        motorSpeed: -3, // rads/sec
-        enableMotor: true,
-    }, fixed, escapeWheel, escapeWheel.getPosition()));
-
-    window.setInterval(function() {
-        let iters = 10;
-        for (let i = 0; i < iters; i++)
-            world.step(1/(60*iters));
-    }, 1000/60);
-
-</script>
+<script src="sim.js"></script>
+<script src="dom.js"></script>
+<script src="ui.js"></script>
 </body>
 </html>
