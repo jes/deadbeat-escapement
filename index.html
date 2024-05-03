@@ -33,11 +33,18 @@ input {
     <label for="teeth">Teeth:</label> <input id="teeth" type="text"><br>
     <label for="majordiameter">Major diameter:</label> <input id="majordiameter" type="text"> m<br>
     <label for="minordiameter">Minor diameter:</label> <input id="minordiameter" type="text"> m<br>
-    <label for="leadingangle">Leading edge angle:</label> <input id="leadingangle" type="text"> deg. from radial<br>
-    <label for="trailingangle">Trailing edge angle:</label> <input id="trailingangle" type="text"> deg. from radial<br>
+    <label for="leadingangle">Leading edge angle:</label> <input id="leadingangle" type="text"> &deg; from radial<br>
+    <label for="trailingangle">Trailing edge angle:</label> <input id="trailingangle" type="text"> &deg; from radial<br>
 
     <br>
     <label></label> <b>Anchor</b><br>
+    <label for="toothspan">Tooth span:</label> <input id="toothspan" type="text"><br>
+    <label for="lift">Lift:</label> <input id="lift" type="text"> &deg; of anchor</input><br>
+    <label for="drop">Drop:</label> <input id="drop" type="text"> &deg; of escape wheel</input><br>
+    <label></label> TODO: asymmetrical lift/drop?<br>
+    <label for="locksafety">Lock safety:</label> <input id="locksafety" type="text"> &deg; of anchor</input><br>
+    <label for="sectoroffset">Sector offset:</label> <input id="sectoroffset" type="text"> &deg; around escape wheel<br>
+    <label for="anchorpivotoffset">Anchor pivot offset:</label> <input id="anchorpivotoffset" type="text"> mm above theoretical<br>
 
     <br>
     <label></label> <b>Pendulum</b><br>
@@ -56,6 +63,7 @@ input {
 </div>
 
 <script src="planck.min.js"></script>
+<script src="maths.js"></script>
 <script src="renderer.js"></script>
 <script src="escapewheel.js"></script>
 <script src="anchor.js"></script>

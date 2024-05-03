@@ -5,27 +5,8 @@ let renderer;
 let anchor;
 let escapeWheel;
 
-function setupSimulation(params) {
+function setupSimulation(v) {
     Settings.linearSlop = 0.0005;
-
-    let v = {
-        // Escape wheel
-        teeth: parseInt(params.teeth),
-        majordiameter: parseFloat(params.majordiameter),
-        minordiameter: parseFloat(params.minordiameter),
-        leadingangle: parseFloat(params.leadingangle),
-        trailingangle: parseFloat(params.trailingangle),
-
-        // Anchor
-
-        // Pendulum
-        bobmass: parseFloat(params.bobmass),
-        rodlength: parseFloat(params.rodlength),
-
-        // Simulation
-        torque: parseFloat(params.torque),
-        friction: parseFloat(params.friction),
-    };
 
     world = new World({
         gravity: Vec2(0.0, -9.81),
@@ -38,6 +19,56 @@ function setupSimulation(params) {
         position: Vec2(0.0, 0.0),
     });
 
+    let sectorAngle = Math.PI * 2 * v.toothspan / v.teeth; // radians
+    let theta = sectorAngle / 2; // radians
+    let r = v.majordiameter / 2; // mm
+
+    let aX = -r * Math.sin(theta); // mm
+    let aY = r * Math.cos(theta); // mm
+    let bX = 0; // mm
+    let bY = -aX * Math.tan(theta); // mm
+
+    let pivotSeparation = aY + bY; // mm
+
+    // upper line of entry pallet
+    let topLineAngleFromVertical = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety)*Math.PI/180); // radians
+    let escapeWheelRotationDuringImpulse = (180/v.teeth - v.drop) * Math.PI/180; // radians
+    let bottomLineAngleFromVertical = theta + escapeWheelRotationDuringImpulse / 2; // radians
+
+    let a1 = bottomLineAngleFromVertical;
+    let a2 = topLineAngleFromVertical;
+    // find h where h*tan(a2)=(p-h)*tan(a1)...
+    // h = (p*tan(a1))/(tan(a1)+tan(a2));
+    let h = (pivotSeparation*Math.tan(a1)) / (Math.tan(a1)+Math.tan(a2)); // mm
+    let c = intersection(bottomLineAngleFromVertical, topLineAngleFromVertical, pivotSeparation);
+
+    bottomLineAngleFromVertical = theta - escapeWheelRotationDuringImpulse / 2;
+    topLineAngleFromVertical = Math.PI/2 - theta - ((v.lift/2+v.locksafety)*Math.PI/180);
+    let d = intersection(bottomLineAngleFromVertical, topLineAngleFromVertical, pivotSeparation);
+
+    let blaf = theta - escapeWheelRotationDuringImpulse/2;
+    let tlaf = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety)*Math.PI/180);
+    let e = intersection(blaf, tlaf, pivotSeparation);
+
+    blaf = theta + escapeWheelRotationDuringImpulse/2;
+    tlaf = (Math.PI/2 - theta) - ((v.lift/2+v.locksafety)*Math.PI/180);
+    let f = intersection(blaf, tlaf, pivotSeparation);
+
+
+    let extra = {
+        pivotseparation: pivotSeparation,
+        cx: -c.x,
+        cy: c.y,
+        dx: -d.x,
+        dy: d.y,
+
+        ex: e.x,
+        ey: e.y,
+        fx: f.x,
+        fy: f.y,
+    };
+    console.log(extra);
+
     anchor = world.createBody({
         type: 'dynamic',
         position: Vec2(0.0, 0.0),
@@ -46,14 +77,13 @@ function setupSimulation(params) {
     let bobRadius = 0.1; // m
     let bobArea = Math.PI * bobRadius * bobRadius;
     let bobDensity = v.bobmass / bobArea;
-    let pivotSeparation = 0.41;
     anchor.createFixture({
-        shape: new Circle(Vec2(0.0, 0.41-v.rodlength), bobRadius),
+        shape: new Circle(Vec2(0.0, pivotSeparation-v.rodlength), bobRadius),
         density: bobDensity,
         filterMaskBits: 0, // bob does not collide
     });
 
-    addAnchorFixtures(anchor, v);
+    addAnchorFixtures(anchor, v, extra);
 
     escapeWheel = world.createBody({
         type: 'dynamic',
@@ -62,7 +92,7 @@ function setupSimulation(params) {
     });
     addEscapeWheelFixtures(escapeWheel, v);
 
-    let pivotPoint = Vec2(-0.01, 0.41);
+    let pivotPoint = Vec2(-0.01, pivotSeparation);
     let pendulumJoint = world.createJoint(new RevoluteJoint({}, anchor, fixed, pivotPoint));
     let escapeWheelJoint = world.createJoint(new RevoluteJoint({
         maxMotorTorque: v.torque, // Nm?

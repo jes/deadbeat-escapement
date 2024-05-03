@@ -7,6 +7,12 @@ let defaultParams = {
     trailingangle: "8", // deg
 
     // Anchor
+    toothspan: "7.5",
+    lift: "2", // deg of anchor
+    drop: "2", // deg of escape wheel
+    locksafety: "0.5", // deg of anchor
+    sectoroffset: "0", // deg around escape wheel
+    anchorpivotoffset: "0", // mm above theoretical
 
     // Pendulum
     bobmass: "1.0", // kg
@@ -23,13 +29,16 @@ function apply() {
     for (let key in defaultParams) {
         if (!defaultParams.hasOwnProperty(key))
             continue;
-        params[key] = val(key);
+        params[key] = parseFloat(val(key));
     }
     setupSimulation(params);
 }
 
 function reset() {
-    params = defaultParams;
+    params = {};
+    for (let key in defaultParams) {
+        params[key] = parseFloat(defaultParams[key]);
+    }
     updateForm();
     setupSimulation(params);
 }
