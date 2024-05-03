@@ -21,14 +21,14 @@ function setupSimulation(v) {
 
     let sectorAngle = Math.PI * 2 * v.toothspan / v.teeth; // radians
     let theta = sectorAngle / 2; // radians
-    let r = v.majordiameter / 2; // mm
+    let r = v.majordiameter / 2; // m
 
-    let aX = -r * Math.sin(theta); // mm
-    let aY = r * Math.cos(theta); // mm
-    let bX = 0; // mm
-    let bY = -aX * Math.tan(theta); // mm
+    let aX = -r * Math.sin(theta); // m
+    let aY = r * Math.cos(theta); // m
+    let bX = 0; // m
+    let bY = -aX * Math.tan(theta); // m
 
-    let pivotSeparation = aY + bY; // mm
+    let pivotSeparation = aY + bY + v.anchorpivotoffset/1000.0; // mm
 
     // upper line of entry pallet
     let topLineAngleFromVertical = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety)*Math.PI/180); // radians
