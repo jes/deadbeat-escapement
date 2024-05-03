@@ -21,15 +21,16 @@ function setupSimulation(params) {
 
     anchor = world.createBody({
         type: 'dynamic',
-        position: Vec2(-0.01, 0.41),
+        position: Vec2(0.0, 0.0),
         bullet: true,
     });
     let bobMass = parseFloat(params.bobmass);
     let bobRadius = 0.1; // m
     let bobArea = Math.PI * bobRadius * bobRadius;
     let bobDensity = bobMass / bobArea;
+    let pivotSeparation = 0.41;
     anchor.createFixture({
-        shape: new Circle(Vec2(0.0, -parseFloat(params.rodlength)), bobRadius),
+        shape: new Circle(Vec2(0.0, 0.41-parseFloat(params.rodlength)), bobRadius),
         density: bobDensity,
         filterMaskBits: 0, // bob does not collide
     });
@@ -53,7 +54,8 @@ function setupSimulation(params) {
         friction: parseFloat(params.friction),
     });
 
-    let pendulumJoint = world.createJoint(new RevoluteJoint({}, anchor, fixed, anchor.getPosition()));
+    let pivotPoint = Vec2(-0.01, 0.41);
+    let pendulumJoint = world.createJoint(new RevoluteJoint({}, anchor, fixed, pivotPoint));
     let escapeWheelJoint = world.createJoint(new RevoluteJoint({
         maxMotorTorque: parseFloat(params.torque), // Nm?
         motorSpeed: -3, // rads/sec
