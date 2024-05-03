@@ -1,16 +1,15 @@
 /* params:
  *  - teeth: number of teeth
- *  - majorDiameter: major diameter in metres
- *  - minorDiameter: minor diameter in metres
- *  - leadingAngle: leading edge angle, back from radial, in degrees
- *  - trailingAngle: trailing edge angle, back from radial, in degrees
- *  - density: passed through to each fixture
+ *  - majordiameter: major diameter in metres
+ *  - minordiameter: minor diameter in metres
+ *  - leadingangle: leading edge angle, back from radial, in degrees
+ *  - trailingangle: trailing edge angle, back from radial, in degrees
  *  - friction: passed through to each fixture
  */
 function addEscapeWheelFixtures(body, params) {
     body.createFixture({
-        shape: new Circle(params.minorDiameter/2),
-        density: params.density,
+        shape: new Circle(params.minordiameter/2),
+        density: 0.001,
         friction: params.friction,
     });
 
@@ -18,21 +17,21 @@ function addEscapeWheelFixtures(body, params) {
     for (let i = 0; i < params.teeth; i++) {
         body.createFixture({
             shape: generateTooth(i*angleStep*Math.PI/180, params),
-            density: params.density,
-            friction: params.density,
+            density: 0.001,
+            friction: params.friction,
         });
     }
 }
 
 function generateTooth(rootAngle, params) {
-    const rootX = params.minorDiameter / 2 * Math.cos(rootAngle);
-    const rootY = params.minorDiameter / 2 * Math.sin(rootAngle);
-    const tipAngle = rootAngle - params.leadingAngle * Math.PI / 180;
-    const tipX = params.majorDiameter / 2 * Math.cos(tipAngle);
-    const tipY = params.majorDiameter / 2 * Math.sin(tipAngle);
-    const trailingAngleRadians = params.trailingAngle * Math.PI / 180;
-    const trailingX = params.minorDiameter / 2 * Math.cos(rootAngle + trailingAngleRadians);
-    const trailingY = params.minorDiameter / 2 * Math.sin(rootAngle + trailingAngleRadians);
+    const rootX = params.minordiameter / 2 * Math.cos(rootAngle);
+    const rootY = params.minordiameter / 2 * Math.sin(rootAngle);
+    const tipAngle = rootAngle - params.leadingangle * Math.PI / 180;
+    const tipX = params.majordiameter / 2 * Math.cos(tipAngle);
+    const tipY = params.majordiameter / 2 * Math.sin(tipAngle);
+    const trailingAngleRadians = params.trailingangle * Math.PI / 180;
+    const trailingX = params.minordiameter / 2 * Math.cos(rootAngle + trailingAngleRadians);
+    const trailingY = params.minordiameter / 2 * Math.sin(rootAngle + trailingAngleRadians);
     return new Polygon([
         Vec2(rootX, rootY),
         Vec2(tipX, tipY),
