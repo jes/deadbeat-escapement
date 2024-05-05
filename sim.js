@@ -127,6 +127,7 @@ let lastZeroCrossTimestamp = 0;
 let anchorMinAngle = 0;
 let anchorMaxAngle = 0;
 let anchorTorque = 0;
+let anchorAngleIntegral = 0;
 
 let ts = 0;
 let period = 0;
@@ -146,6 +147,7 @@ function step(dt) {
         lastZeroCrossTimestamp = (ts-dt)+k*dt;
     }
     lastAnchorAngle = anchorAngle;
+    anchorAngleIntegral += anchorAngle * 180/Math.PI * dt;
 
     let anchorAngularVelocity = anchor.getAngularVelocity();
     if (lastAnchorAngularVelocity < 0 && anchorAngularVelocity > 0) {

@@ -5,8 +5,8 @@ function Scope(parentElement) {
 
     let scope = this;
 
-    let fieldnames = ['Anchor angle (deg.)', 'Escape wheel tooth angle (deg.)', 'Anchor angular velocity (deg./sec)', 'Escape wheel angular velocity (deg./sec)'];
-    let fieldvalues = ['anchorangle', 'escapewheeltoothangle', 'anchorangvel', 'escapewheelangvel'];
+    let fieldnames = ['Anchor angle (deg)', 'Escape wheel tooth angle (deg)', 'Anchor angular velocity (deg/sec)', 'Escape wheel angular velocity (deg/sec)', 'Anchor angle integral (deg secs)'];
+    let fieldvalues = ['anchorangle', 'escapewheeltoothangle', 'anchorangvel', 'escapewheelangvel', 'anchorangleintegral'];
 
     this.field = fieldvalues[0];
 
@@ -111,6 +111,7 @@ Scope.prototype.getValue = function() {
         case 'escapewheeltoothangle': return (escapeWheel.getAngle()*180/Math.PI)%(360/params.teeth);
         case 'anchorangvel': return anchor.getAngularVelocity()*180/Math.PI;
         case 'escapewheelangvel': return escapeWheel.getAngularVelocity()*180/Math.PI;
+        case 'anchorangleintegral': return anchorAngleIntegral;
     }
     console.log("unrecognised field name: " + this.fieldselect.value);
     return 0;
