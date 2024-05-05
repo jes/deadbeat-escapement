@@ -54,6 +54,17 @@ function setupSimulation(v) {
     tlaf = (Math.PI/2 - theta) - ((v.lift/2+v.locksafety)*Math.PI/180);
     let f = intersection(blaf, tlaf, pivotSeparation);
 
+    let lockingAngle = 7; // deg
+
+    let entryCornerDistance = Vec2.distance(c, Vec2(0, pivotSeparation));
+    tlaf = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety+lockingAngle)*Math.PI/180); // radians
+    let gX = entryCornerDistance * Math.sin(tlaf);
+    let gY = pivotSeparation - entryCornerDistance * Math.cos(tlaf);
+
+    let ecd = Vec2.distance(e, Vec2(0, pivotSeparation));
+    tlaf = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety+lockingAngle)*Math.PI/180);
+    let hX = ecd * Math.sin(tlaf);
+    let hY = pivotSeparation - ecd * Math.cos(tlaf);
 
     let extra = {
         pivotseparation: pivotSeparation,
@@ -61,11 +72,15 @@ function setupSimulation(v) {
         cy: c.y,
         dx: -d.x,
         dy: d.y,
+        gx: -gX,
+        gy: gY,
 
         ex: e.x,
         ey: e.y,
         fx: f.x,
         fy: f.y,
+        hx: hX,
+        hy: hY,
     };
     console.log(extra);
 
