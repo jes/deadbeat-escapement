@@ -25,7 +25,9 @@ input {
 <h1>Deadbeat Escapement Simulator</h1>
 
 <div id="display">
-    <canvas id="canvas" width="400" height="600"></canvas>
+    <canvas id="canvas" width="400" height="600"></canvas><br>
+    Period: <span id="period"></span> secs (<span id="freq"></span> Hz)<br>
+    Amplitude: <span id="amplitude"></span>&deg;<br>
 </div>
 
 <div id="params">
@@ -49,6 +51,7 @@ input {
     <br>
     <label></label> <b>Pendulum</b><br>
     <label for="bobmass">Bob mass:</label> <input id="bobmass" type="text"> kg<br>
+    <label for="bobdiameter">Bob diameter:</label> <input id="bobdiameter" type="text"> mm<br>
     <label for="rodlength">Rod length:</label> <input id="rodlength" type="text"> mm<br>
 
     <br>
@@ -62,13 +65,21 @@ input {
     <button id="reset">Reset</button>
 </div>
 
+<div style="clear:both"></div>
+
+<div id="scopes">
+    <button id="addscope">+ Add scope</button><br>
+</div>
+
 <script src="planck.min.js"></script>
 <script src="maths.js"></script>
+<script src="util.js"></script>
 <script src="renderer.js"></script>
 <script src="escapewheel.js"></script>
 <script src="anchor.js"></script>
 <script src="sim.js"></script>
 <script src="dom.js"></script>
+<script src="scope.js"></script>
 <script src="ui.js"></script>
 </body>
 </html>

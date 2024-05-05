@@ -85,14 +85,13 @@ function setupSimulation(v) {
         hx: hX,
         hy: hY,
     };
-    console.log(extra);
 
     anchor = world.createBody({
         type: 'dynamic',
         position: Vec2(0.0, 0.0),
         bullet: true,
     });
-    let bobRadius = 0.1; // m
+    let bobRadius = v.bobdiameter / 2000; // m
     let bobArea = Math.PI * bobRadius * bobRadius;
     let bobDensity = v.bobmass / bobArea;
     anchor.createFixture({
@@ -118,14 +117,61 @@ function setupSimulation(v) {
         enableMotor: true,
     }, fixed, escapeWheel, escapeWheel.getPosition()));
 
-    // XXX: why does this need to be so high?
-    anchor.setAngularVelocity(60);
+    // start off by kicking the pendulum 10 degrees
+    anchor.setAngle(10*Math.PI/180);
+}
+
+let lastAnchorAngle = 0;
+let lastAnchorAngularVelocity = 0;
+let lastZeroCrossTimestamp = 0;
+let anchorMinAngle = 0;
+let anchorMaxAngle = 0;
+let anchorTorque = 0;
+
+let ts = 0;
+let period = 0;
+let amplitude = 0;
+
+function step(dt) {
+    if (!world)
+        return;
+
+    ts += dt;
+
+    let anchorAngle = anchor.getAngle();
+    if (lastAnchorAngle < 0 && anchorAngle > 0) {
+        period = ts - lastZeroCrossTimestamp;
+        let travelled = anchorAngle - lastAnchorAngle;
+        let k = -lastAnchorAngle / travelled; // how far through this timestep did the anchor cross 0 degrees?
+        lastZeroCrossTimestamp = (ts-dt)+k*dt;
+    }
+    lastAnchorAngle = anchorAngle;
+
+    let anchorAngularVelocity = anchor.getAngularVelocity();
+    if (lastAnchorAngularVelocity < 0 && anchorAngularVelocity > 0) {
+        anchorMinAngle = anchorAngle;
+    } else if (lastAnchorAngularVelocity >0 && anchorAngularVelocity < 0) {
+        anchorMaxAngle = anchorAngle;
+    }
+    lastAnchorAngularVelocity = anchorAngularVelocity;
+    amplitude = (anchorMaxAngle - anchorMinAngle) * 180/Math.PI;
+
+    world.step(dt);
+
+    txt('period', sigfigs(period, 8));
+    txt('freq', sigfigs(1/period, 8));
+    txt('amplitude', sigfigs(amplitude, 4));
 }
 
 window.setInterval(function() {
     if (!world)
         return;
-    let iters = 10;
-    for (let i = 0; i < iters; i++)
-        world.step(1/(60*iters));
+    let iters = 50;
+    for (let i = 0; i < iters; i++) {
+        step(1/(60*iters));
+    }
+    for (let scope of scopes) {
+        scope.update(1/60);
+        scope.draw();
+    }
 }, 1000/60);

@@ -16,7 +16,8 @@ let defaultParams = {
 
     // Pendulum
     bobmass: "1.0", // kg
-    rodlength: "1000", // mm
+    bobdiameter: "100", // mm
+    rodlength: "990", // mm
 
     // Simulation
     torque: "0.01", // Nm
@@ -51,7 +52,15 @@ function updateForm() {
     }
 }
 
+let scopes = [];
+function addScope() {
+    scopes.push(new Scope(elem('scopes')));
+}
+
 btn('apply', apply);
 btn('reset', reset);
+btn('addscope', addScope);
+
+addScope();
 
 reset();
