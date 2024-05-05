@@ -1,8 +1,8 @@
 let defaultParams = {
     // Escape wheel
     teeth: "30",
-    majordiameter: "0.55", // m
-    minordiameter: "0.4", // m
+    majordiameter: "550", // mm
+    minordiameter: "400", // mm
     leadingangle: "5", // deg
     trailingangle: "8", // deg
 
@@ -16,7 +16,7 @@ let defaultParams = {
 
     // Pendulum
     bobmass: "1.0", // kg
-    rodlength: "1.0", // m
+    rodlength: "1000", // mm
 
     // Simulation
     torque: "0.1", // Nm

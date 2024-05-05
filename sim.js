@@ -21,7 +21,7 @@ function setupSimulation(v) {
 
     let sectorAngle = Math.PI * 2 * v.toothspan / v.teeth; // radians
     let theta = sectorAngle / 2; // radians
-    let r = v.majordiameter / 2; // m
+    let r = v.majordiameter / 2000; // m
 
     let aX = -r * Math.sin(theta); // m
     let aY = r * Math.cos(theta); // m
@@ -93,7 +93,7 @@ function setupSimulation(v) {
     let bobArea = Math.PI * bobRadius * bobRadius;
     let bobDensity = v.bobmass / bobArea;
     anchor.createFixture({
-        shape: new Circle(Vec2(0.0, pivotSeparation-v.rodlength), bobRadius),
+        shape: new Circle(Vec2(0.0, pivotSeparation-v.rodlength/1000), bobRadius),
         density: bobDensity,
         filterMaskBits: 0, // bob does not collide
     });

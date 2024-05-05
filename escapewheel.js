@@ -8,7 +8,7 @@
  */
 function addEscapeWheelFixtures(body, params) {
     body.createFixture({
-        shape: new Circle(params.minordiameter/2),
+        shape: new Circle(params.minordiameter/2000),
         density: 0.001,
         friction: params.friction,
     });
@@ -24,14 +24,15 @@ function addEscapeWheelFixtures(body, params) {
 }
 
 function generateTooth(rootAngle, params) {
-    const rootX = params.minordiameter / 2 * Math.cos(rootAngle);
-    const rootY = params.minordiameter / 2 * Math.sin(rootAngle);
+    // divide by 2000 to convert from mm diameter to m radius
+    const rootX = params.minordiameter / 2000 * Math.cos(rootAngle);
+    const rootY = params.minordiameter / 2000 * Math.sin(rootAngle);
     const tipAngle = rootAngle - params.leadingangle * Math.PI / 180;
-    const tipX = params.majordiameter / 2 * Math.cos(tipAngle);
-    const tipY = params.majordiameter / 2 * Math.sin(tipAngle);
+    const tipX = params.majordiameter / 2000 * Math.cos(tipAngle);
+    const tipY = params.majordiameter / 2000 * Math.sin(tipAngle);
     const trailingAngleRadians = params.trailingangle * Math.PI / 180;
-    const trailingX = params.minordiameter / 2 * Math.cos(rootAngle + trailingAngleRadians);
-    const trailingY = params.minordiameter / 2 * Math.sin(rootAngle + trailingAngleRadians);
+    const trailingX = params.minordiameter / 2000 * Math.cos(rootAngle + trailingAngleRadians);
+    const trailingY = params.minordiameter / 2000 * Math.sin(rootAngle + trailingAngleRadians);
     return new Polygon([
         Vec2(rootX, rootY),
         Vec2(tipX, tipY),
