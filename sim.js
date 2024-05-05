@@ -28,6 +28,9 @@ function setupSimulation(v) {
     let bX = 0; // m
     let bY = -aX * Math.tan(theta); // m
 
+    // TODO: this doesn't implement anchorpivotoffset properly, it should
+    // keep the impulse faces unchanged, and in the same place, but
+    // move the pivot upwards, and adjust the locking faces to suit
     let pivotSeparation = aY + bY + v.anchorpivotoffset/1000.0; // mm
 
     // upper line of entry pallet
