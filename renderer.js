@@ -22,14 +22,15 @@ class Renderer {
         this.ctx = canvas.getContext('2d');
         this.ctx.save();
 
-        this.ctx.fillStyle = '#01e';
-        this.ctx.strokeStyle = '#fff';
+        this.ctx.fillStyle = '#eee';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.strokeStyle = '#000';
+        this.ctx.fillStyle = '#fff';
 
         this.ctx.translate(this.canvas.width/2, this.canvas.height/2);
 
         let scale = canvas.height / this.viewHeight;
-        this.ctx.lineWidth = 2.0/scale;
+        this.ctx.lineWidth = 1.0/scale;
         this.ctx.scale(scale, -scale);
 
         for (let body = this.world.getBodyList(); body; body = body.getNext()) {
