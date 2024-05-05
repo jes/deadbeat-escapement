@@ -109,7 +109,7 @@ function setupSimulation(v) {
     });
     addEscapeWheelFixtures(escapeWheel, v);
 
-    let pivotPoint = Vec2(-0.01, pivotSeparation);
+    let pivotPoint = Vec2(0.0, pivotSeparation);
     let pendulumJoint = world.createJoint(new RevoluteJoint({}, anchor, fixed, pivotPoint));
     let escapeWheelJoint = world.createJoint(new RevoluteJoint({
         maxMotorTorque: v.torque, // Nm?
@@ -161,6 +161,7 @@ function step(dt) {
     txt('period', sigfigs(period, 8));
     txt('freq', sigfigs(1/period, 8));
     txt('amplitude', sigfigs(amplitude, 4));
+    txt('asymmetry', sigfigs((anchorMaxAngle+anchorMinAngle)*180/Math.PI, 3));
 }
 
 window.setInterval(function() {

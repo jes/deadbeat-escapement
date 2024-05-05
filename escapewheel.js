@@ -31,8 +31,8 @@ function generateTooth(rootAngle, params) {
     const tipX = params.majordiameter / 2000 * Math.cos(tipAngle);
     const tipY = params.majordiameter / 2000 * Math.sin(tipAngle);
     const trailingAngleRadians = params.trailingangle * Math.PI / 180;
-    const trailingX = params.minordiameter / 2000 * Math.cos(rootAngle + trailingAngleRadians);
-    const trailingY = params.minordiameter / 2000 * Math.sin(rootAngle + trailingAngleRadians);
+    const trailingX = params.minordiameter / 2000 * Math.cos(rootAngle + trailingAngleRadians - params.leadingangle*Math.PI/180);
+    const trailingY = params.minordiameter / 2000 * Math.sin(rootAngle + trailingAngleRadians - params.leadingangle*Math.PI/180);
     return new Polygon([
         Vec2(rootX, rootY),
         Vec2(tipX, tipY),
