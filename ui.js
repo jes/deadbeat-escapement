@@ -19,7 +19,7 @@ let defaultParams = {
     rodlength: "1000", // mm
 
     // Simulation
-    torque: "0.1", // Nm
+    torque: "0.01", // Nm
     friction: "0.1",
 };
 let params = defaultParams;
