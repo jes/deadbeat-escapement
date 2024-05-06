@@ -108,7 +108,7 @@ Scope.prototype.draw = function() {
 Scope.prototype.getValue = function() {
     switch (this.fieldselect.value) {
         case 'anchorangle': return anchor.getAngle()*180/Math.PI;
-        case 'escapewheeltoothangle': return (escapeWheel.getAngle()*180/Math.PI)%(360/params.teeth);
+        case 'escapewheeltoothangle': return (-escapeWheel.getAngle()*180/Math.PI)%(360/params.teeth);
         case 'anchorangvel': return anchor.getAngularVelocity()*180/Math.PI;
         case 'escapewheelangvel': return escapeWheel.getAngularVelocity()*180/Math.PI;
         case 'anchorangleintegral': return anchorAngleIntegral;
