@@ -51,7 +51,7 @@ function addAnchorFixtures(body, params, extra) {
     });
 
     body.createFixture({
-        shape: new Circle(Vec2(0.0, extra.pivotseparation), 0.01),
+        shape: new Circle(Vec2(0.0, extra.pivotseparation), params.majordiameter/100000),
         density: 0,
         filterMaskBits: 0,
     });

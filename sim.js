@@ -6,13 +6,14 @@ let anchor;
 let escapeWheel;
 
 function setupSimulation(v) {
-    Settings.linearSlop = 0.0005;
+    Settings.linearSlop = v.majordiameter * 10e-7;
 
     world = new World({
         gravity: Vec2(0.0, -9.81),
         allowSleep: false,
     });
     renderer = new Renderer(world, 'canvas');
+    renderer.viewHeight = v.majordiameter/1000 * 2;
 
     let fixed = world.createBody({
         type: 'static',
