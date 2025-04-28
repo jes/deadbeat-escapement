@@ -16,7 +16,7 @@ input {
 }
 #params label {
     display: inline-block;
-    width: 180px;
+    width: 220px;
     text-align: right;
 }
 </style>
@@ -44,21 +44,22 @@ input {
     <label for="toothspan">Tooth span:</label> <input id="toothspan" type="text"><br>
     <label for="lift">Lift:</label> <input id="lift" type="text"> &deg; of anchor</input><br>
     <label for="drop">Drop:</label> <input id="drop" type="text"> &deg; of escape wheel</input><br>
-    <label></label> TODO: asymmetrical lift/drop?<br>
+    <!--<label></label> TODO: asymmetrical lift/drop?<br>-->
     <label for="locksafety">Lock safety:</label> <input id="locksafety" type="text"> &deg; of anchor</input><br>
-    <label for="sectoroffset">Sector offset:</label> <input id="sectoroffset" type="text"> &deg; around escape wheel (TODO)<br>
-    <label for="anchorpivotoffset">Anchor pivot offset:</label> <input id="anchorpivotoffset" type="text"> mm above theoretical (TODO)<br>
+    <!--<label for="sectoroffset">Sector offset:</label> <input id="sectoroffset" type="text"> &deg; around escape wheel (TODO)<br>
+    <label for="anchorpivotoffset">Anchor pivot offset:</label> <input id="anchorpivotoffset" type="text"> mm above theoretical (TODO)<br>-->
 
     <br>
     <label></label> <b>Pendulum</b><br>
     <label for="bobmass">Bob mass:</label> <input id="bobmass" type="text"> kg<br>
-    <label for="bobdiameter">Bob diameter:</label> <input id="bobdiameter" type="text"> mm<br>
+    <div style="display:none"><label for="bobdiameter">Bob diameter:</label> <input id="bobdiameter" type="text"> mm<br></div>
     <label for="rodlength">Rod length:</label> <input id="rodlength" type="text"> mm<br>
 
     <br>
     <label></label> <b>Simulation</b><br>
     <label for="torque">Drive torque:</label> <input id="torque" type="text"> Nm<br>
     <label for="friction">Coefficient of friction:</label> <input id="friction" type="text"><br>
+    <label for="maxescapewheelangvel">Max. escape wheel speed:</label> <input id="maxescapewheelangvel" type="text"> &deg;/sec<br>
     <label for="initialkick">Initial kick:</label> <input id="initialkick" type="text"> &deg;<br>
 
     <br>

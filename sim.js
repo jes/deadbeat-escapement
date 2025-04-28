@@ -119,7 +119,7 @@ function setupSimulation(v) {
     let pendulumJoint = world.createJoint(new RevoluteJoint({}, anchor, fixed, pivotPoint));
     let escapeWheelJoint = world.createJoint(new RevoluteJoint({
         maxMotorTorque: v.torque, // Nm?
-        motorSpeed: -3, // rads/sec
+        motorSpeed: -v.maxescapewheelangvel*Math.PI/180, // rads/sec
         enableMotor: true,
     }, fixed, escapeWheel, escapeWheel.getPosition()));
 

@@ -22,6 +22,7 @@ let defaultParams = {
     // Simulation
     torque: "0.01", // Nm
     friction: "0.1",
+    maxescapewheelangvel: "720", // deg/sec
     initialkick: "10", // deg
 };
 let params = defaultParams;
