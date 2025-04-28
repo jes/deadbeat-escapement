@@ -192,7 +192,7 @@ function step(dt) {
 window.setInterval(function() {
     if (!world)
         return;
-    let superiters = 3;
+    let superiters = 5;
     let iters = 20;
     for (let i = 0; i < superiters; i++) {
         anchorTorqueSum = 0;

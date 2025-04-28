@@ -1,16 +1,16 @@
 let defaultParams = {
     // Escape wheel
     teeth: "30",
-    majordiameter: "550", // mm
-    minordiameter: "400", // mm
+    majordiameter: "55", // mm
+    minordiameter: "40", // mm
     leadingangle: "5", // deg
     trailingangle: "8", // deg
 
     // Anchor
-    toothspan: "7.5",
-    lift: "2", // deg of anchor
+    toothspan: "12.5",
+    lift: "0.25", // deg of anchor
     drop: "2", // deg of escape wheel
-    locksafety: "0.5", // deg of anchor
+    locksafety: "0.25", // deg of anchor
 
     // Pendulum
     bobmass: "1.0", // kg
@@ -18,10 +18,10 @@ let defaultParams = {
     rodlength: "990", // mm
 
     // Simulation
-    torque: "0.01", // Nm
+    torque: "0.001", // Nm
     friction: "0.1",
     maxescapewheelangvel: "720", // deg/sec
-    initialkick: "10", // deg
+    initialkick: "0.5", // deg
 };
 let params = defaultParams;
 
