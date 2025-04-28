@@ -7,6 +7,7 @@ let escapeWheel;
 let pivotSeparation;
 let rodLength;
 let bobMass;
+let bobRadius;
 
 function setupSimulation(v) {
     Settings.linearSlop = v.majordiameter * 10e-7;
@@ -92,7 +93,7 @@ function setupSimulation(v) {
         position: Vec2(0.0, 0.0),
         bullet: true,
     });
-    let bobRadius = v.bobdiameter / 2000; // m
+    bobRadius = v.rodlength / 20000; // m
     let bobArea = Math.PI * bobRadius * bobRadius;
     bobMass = v.bobmass;
     let bobDensity = bobMass / bobArea;
@@ -172,7 +173,7 @@ function step(dt) {
     lastEscapeWheelAngularVelocity = escapeWheelAngularVelocity;
 
     // Calculate total torque from angular acceleration
-    let pendulumMomentOfInertia = bobMass * rodLength * rodLength;
+    let pendulumMomentOfInertia = bobMass * rodLength * rodLength + (1/2) * bobMass * bobRadius * bobRadius;
     totalAnchorTorque = anchorAngularAcceleration * pendulumMomentOfInertia;
     
     // Calculate gravitational torque using the angle

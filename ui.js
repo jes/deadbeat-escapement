@@ -14,7 +14,6 @@ let defaultParams = {
 
     // Pendulum
     bobmass: "1.0", // kg
-    bobdiameter: "100", // mm
     rodlength: "990", // mm
 
     // Simulation
