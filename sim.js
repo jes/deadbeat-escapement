@@ -4,6 +4,7 @@ let world;
 let renderer;
 let anchor;
 let escapeWheel;
+let pivotSeparation;
 
 function setupSimulation(v) {
     Settings.linearSlop = v.majordiameter * 10e-7;
@@ -32,7 +33,7 @@ function setupSimulation(v) {
     // TODO: this doesn't implement anchorpivotoffset properly, it should
     // keep the impulse faces unchanged, and in the same place, but
     // move the pivot upwards, and adjust the locking faces to suit
-    let pivotSeparation = aY + bY + v.anchorpivotoffset/1000.0; // mm
+    pivotSeparation = aY + bY + v.anchorpivotoffset/1000.0; // mm
 
     // upper line of entry pallet
     let topLineAngleFromVertical = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety)*Math.PI/180); // radians
@@ -124,7 +125,10 @@ function setupSimulation(v) {
 
 let lastAnchorAngle = 0;
 let lastAnchorAngularVelocity = 0;
+let lastEscapeWheelAngularVelocity = 0;
 let lastZeroCrossTimestamp = 0;
+let escapeWheelAngularAcceleration = 0;
+let anchorAngularAcceleration = 0;
 let anchorMinAngle = 0;
 let anchorMaxAngle = 0;
 let anchorTorque = 0;
@@ -151,6 +155,7 @@ function step(dt) {
     anchorAngleIntegral += anchorAngle * 180/Math.PI * dt;
 
     let anchorAngularVelocity = anchor.getAngularVelocity();
+    anchorAngularAcceleration = (anchorAngularVelocity - lastAnchorAngularVelocity) / dt;
     if (lastAnchorAngularVelocity < 0 && anchorAngularVelocity > 0) {
         anchorMinAngle = anchorAngle;
     } else if (lastAnchorAngularVelocity >0 && anchorAngularVelocity < 0) {
@@ -158,6 +163,26 @@ function step(dt) {
     }
     lastAnchorAngularVelocity = anchorAngularVelocity;
     amplitude = (anchorMaxAngle - anchorMinAngle) * 180/Math.PI;
+
+    let escapeWheelAngularVelocity = escapeWheel.getAngularVelocity();
+    escapeWheelAngularAcceleration = (escapeWheelAngularVelocity - lastEscapeWheelAngularVelocity) / dt;
+    lastEscapeWheelAngularVelocity = escapeWheelAngularVelocity;
+
+    // Calculate total torque from angular acceleration
+    let totalAnchorTorque = anchorAngularAcceleration * anchor.m_I;
+    
+    // Calculate gravitational torque properly
+    // Get the center of mass position (likely the bob position)
+    let bobPosition = anchor.getWorldCenter();
+    // Get the pivot position (which is at 0, pivotSeparation)
+    let pivotPosition = Vec2(0.0, pivotSeparation);
+    // Calculate the horizontal distance from pivot to bob
+    let horizontalOffset = bobPosition.x - pivotPosition.x;
+    // Calculate gravitational torque: mass * g * horizontal distance
+    let gravityAnchorTorque = anchor.getMass() * (-world.m_gravity.y) * horizontalOffset;
+    
+    // The difference is the torque from the escapement
+    anchorTorque = totalAnchorTorque - gravityAnchorTorque;
 
     world.step(dt);
 
