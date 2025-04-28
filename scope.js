@@ -8,10 +8,8 @@ function Scope(parentElement) {
 
     let scope = this;
 
-    let fieldnames = ['Anchor angle (deg)', 'Escape wheel tooth angle (deg)', 'Anchor angular velocity (deg/sec)', 'Anchor angular acceleration (deg/sec^2)', 'Escape wheel angular velocity (deg/sec)', 'Escape wheel angular acceleration (deg/sec^2)', 'Anchor angle integral (deg secs)', 'Anchor torque (Nm)', 'Gravity torque (Nm)', 'X/Y: Angle vs Torque'];
-    let fieldvalues = ['anchorangle', 'escapewheeltoothangle', 'anchorangvel', 'anchorangaccel', 'escapewheelangvel', 'escapewheelangaccel', 'anchorangleintegral', 'anchortorque', 'gravitytorque', 'xyplot'];
-
-    this.field = fieldvalues[0];
+    let fieldnames = ['Angle vs torque', 'Anchor angle (deg)', 'Escape wheel tooth angle (deg)', 'Anchor angular velocity (deg/sec)', 'Anchor angular acceleration (deg/sec^2)', 'Escape wheel angular velocity (deg/sec)', 'Escape wheel angular acceleration (deg/sec^2)', 'Anchor angle integral (deg secs)', 'Anchor torque (Nm)', 'Gravity torque (Nm)'];
+    let fieldvalues = ['xyplot', 'anchorangle', 'escapewheeltoothangle', 'anchorangvel', 'anchorangaccel', 'escapewheelangvel', 'escapewheelangaccel', 'anchorangleintegral', 'anchortorque', 'gravitytorque'];
 
     this.div = document.createElement('div');
     this.div.style.border = "solid 1px black";
@@ -26,6 +24,7 @@ function Scope(parentElement) {
         scope.points = [];
         scope.isXYPlot = scope.fieldselect.value === 'xyplot';
     };
+    this.fieldselect.onchange();
     this.div.appendChild(this.fieldselect);
     let delbutton = document.createElement('button');
     delbutton.innerText = '- Remove scope';

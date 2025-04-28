@@ -124,7 +124,7 @@ function setupSimulation(v) {
     }, fixed, escapeWheel, escapeWheel.getPosition()));
 
     // start off by kicking the pendulum 10 degrees
-    anchor.setAngle(10*Math.PI/180);
+    anchor.setAngle(v.initialkick*Math.PI/180);
 }
 
 let lastAnchorAngle = 0;
