@@ -1,6 +1,6 @@
 function Scope(parentElement) {
     this.points = [];
-    this.maxpoints = 2000;
+    this.maxpoints = 1000;
     this.parentElement = parentElement;
     this.isXYPlot = false;
     this.xField = 'anchorangle';

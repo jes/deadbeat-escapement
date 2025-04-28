@@ -136,6 +136,7 @@ let anchorAngularAcceleration = 0;
 let anchorMinAngle = 0;
 let anchorMaxAngle = 0;
 let anchorTorque = 0;
+let anchorTorqueSum = 0;
 let gravityAnchorTorque = 0;
 let anchorAngleIntegral = 0;
 
@@ -174,13 +175,14 @@ function step(dt) {
     lastEscapeWheelAngularVelocity = escapeWheelAngularVelocity;
 
     // Calculate total torque from angular acceleration
-    let totalAnchorTorque = anchorAngularAcceleration * anchor.m_I;
+    let pendulumMomentOfInertia = bobMass * rodLength * rodLength;
+    let totalAnchorTorque = anchorAngularAcceleration * pendulumMomentOfInertia;
     
     // Calculate gravitational torque using the angle
     gravityAnchorTorque = bobMass * world.m_gravity.y * rodLength * Math.sin(anchorAngle);
     
     // The difference is the torque from the escapement
-    anchorTorque = totalAnchorTorque - gravityAnchorTorque*val('torquescale');
+    anchorTorqueSum += totalAnchorTorque - gravityAnchorTorque;
 
     world.step(dt);
 
@@ -193,12 +195,14 @@ function step(dt) {
 window.setInterval(function() {
     if (!world)
         return;
-    let superiters = 2;
-    let iters = 30;
+    let superiters = 3;
+    let iters = 20;
     for (let i = 0; i < superiters; i++) {
+        anchorTorqueSum = 0;
         for (let i = 0; i < iters; i++) {
             step(1/(60*iters*superiters));
         }
+        anchorTorque = anchorTorqueSum / iters;
         for (let scope of scopes) {
             scope.update(1/(60*superiters));
         }
