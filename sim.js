@@ -133,7 +133,7 @@ let anchorAngularAcceleration = 0;
 let anchorMinAngle = 0;
 let anchorMaxAngle = 0;
 let anchorTorque = 0;
-let anchorTorqueSum = 0;
+let totalAnchorTorque = 0;
 let gravityAnchorTorque = 0;
 let anchorAngleIntegral = 0;
 
@@ -173,14 +173,11 @@ function step(dt) {
 
     // Calculate total torque from angular acceleration
     let pendulumMomentOfInertia = bobMass * rodLength * rodLength;
-    let totalAnchorTorque = anchorAngularAcceleration * pendulumMomentOfInertia;
+    totalAnchorTorque = anchorAngularAcceleration * pendulumMomentOfInertia;
     
     // Calculate gravitational torque using the angle
     gravityAnchorTorque = bobMass * world.m_gravity.y * rodLength * Math.sin(anchorAngle);
     
-    // The difference is the torque from the escapement
-    anchorTorqueSum += totalAnchorTorque - gravityAnchorTorque;
-
     world.step(dt);
 
     txt('period', sigfigs(period, 8));
@@ -195,11 +192,22 @@ window.setInterval(function() {
     let superiters = 5;
     let iters = 20;
     for (let i = 0; i < superiters; i++) {
-        anchorTorqueSum = 0;
+        let anchorTorqueValues = []; // Array to collect torque values
         for (let i = 0; i < iters; i++) {
             step(1/(60*iters*superiters));
+            // Store the calculated torque difference instead of summing
+            anchorTorqueValues.push(totalAnchorTorque - gravityAnchorTorque);
         }
-        anchorTorque = anchorTorqueSum / iters;
+        // Sort the array and take the median
+        anchorTorqueValues.sort((a, b) => a - b);
+        let middle = Math.floor(anchorTorqueValues.length / 2);
+        if (anchorTorqueValues.length % 2 === 0) {
+            // Even length - average the two middle values
+            anchorTorque = (anchorTorqueValues[middle - 1] + anchorTorqueValues[middle]) / 2;
+        } else {
+            // Odd length - take the middle value
+            anchorTorque = anchorTorqueValues[middle];
+        }
         for (let scope of scopes) {
             scope.update(1/(60*superiters));
         }

@@ -347,18 +347,6 @@ Scope.prototype.getValue = function() {
 Scope.prototype.update = function(dt) {
     if (this.isXYPlot) {
         let v = this.getValue();
-        if (this.points.length > 1) {
-            // try to remove the worst outliers, due to Planck.js precision issues
-            let lastY = this.points[this.points.length - 1][1];
-            let prevY = this.points[this.points.length - 2][1];
-            let diffLast = Math.abs(v[1] - lastY);
-            let diffPrev = Math.abs(v[1] - prevY);
-            if (diffLast > diffPrev && !this.lastWasOutlier) {
-                this.lastWasOutlier = true;
-                return;
-            }
-            this.lastWasOutlier = false;
-        }
         // For XY plot, store [x, y] directly
         this.points.push(v);
         // Limit number of points to avoid performance issues
