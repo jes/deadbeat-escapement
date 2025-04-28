@@ -8,8 +8,8 @@ let defaultParams = {
 
     // Anchor
     toothspan: "12.5",
-    lift: "0.25", // deg of anchor
-    drop: "2", // deg of escape wheel
+    lift: "1.0", // deg of anchor
+    drop: "2.0", // deg of escape wheel
     locksafety: "0.25", // deg of anchor
 
     // Pendulum
@@ -21,7 +21,7 @@ let defaultParams = {
     torque: "0.001", // Nm
     friction: "0.1",
     maxescapewheelangvel: "720", // deg/sec
-    initialkick: "0.5", // deg
+    initialkick: "1", // deg
 };
 let params = defaultParams;
 
