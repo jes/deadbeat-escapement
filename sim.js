@@ -5,6 +5,8 @@ let renderer;
 let anchor;
 let escapeWheel;
 let pivotSeparation;
+let rodLength;
+let bobMass;
 
 function setupSimulation(v) {
     Settings.linearSlop = v.majordiameter * 10e-7;
@@ -95,9 +97,11 @@ function setupSimulation(v) {
     });
     let bobRadius = v.bobdiameter / 2000; // m
     let bobArea = Math.PI * bobRadius * bobRadius;
-    let bobDensity = v.bobmass / bobArea;
+    bobMass = v.bobmass;
+    let bobDensity = bobMass / bobArea;
+    rodLength = v.rodlength / 1000;
     anchor.createFixture({
-        shape: new Circle(Vec2(0.0, pivotSeparation-v.rodlength/1000), bobRadius),
+        shape: new Circle(Vec2(0.0, pivotSeparation-rodLength), bobRadius),
         density: bobDensity,
         filterMaskBits: 0, // bob does not collide
     });
@@ -132,6 +136,7 @@ let anchorAngularAcceleration = 0;
 let anchorMinAngle = 0;
 let anchorMaxAngle = 0;
 let anchorTorque = 0;
+let gravityAnchorTorque = 0;
 let anchorAngleIntegral = 0;
 
 let ts = 0;
@@ -171,18 +176,11 @@ function step(dt) {
     // Calculate total torque from angular acceleration
     let totalAnchorTorque = anchorAngularAcceleration * anchor.m_I;
     
-    // Calculate gravitational torque properly
-    // Get the center of mass position (likely the bob position)
-    let bobPosition = anchor.getWorldCenter();
-    // Get the pivot position (which is at 0, pivotSeparation)
-    let pivotPosition = Vec2(0.0, pivotSeparation);
-    // Calculate the horizontal distance from pivot to bob
-    let horizontalOffset = bobPosition.x - pivotPosition.x;
-    // Calculate gravitational torque: mass * g * horizontal distance
-    let gravityAnchorTorque = anchor.getMass() * (-world.m_gravity.y) * horizontalOffset;
+    // Calculate gravitational torque using the angle
+    gravityAnchorTorque = bobMass * world.m_gravity.y * rodLength * Math.sin(anchorAngle);
     
     // The difference is the torque from the escapement
-    anchorTorque = totalAnchorTorque - gravityAnchorTorque;
+    anchorTorque = totalAnchorTorque - gravityAnchorTorque*val('torquescale');
 
     world.step(dt);
 
@@ -195,12 +193,17 @@ function step(dt) {
 window.setInterval(function() {
     if (!world)
         return;
-    let iters = 50;
-    for (let i = 0; i < iters; i++) {
-        step(1/(60*iters));
+    let superiters = 2;
+    let iters = 30;
+    for (let i = 0; i < superiters; i++) {
+        for (let i = 0; i < iters; i++) {
+            step(1/(60*iters*superiters));
+        }
+        for (let scope of scopes) {
+            scope.update(1/(60*superiters));
+        }
     }
     for (let scope of scopes) {
-        scope.update(1/60);
         scope.draw();
     }
 }, 1000/60);
