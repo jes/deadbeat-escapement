@@ -8,8 +8,8 @@ function Scope(parentElement) {
 
     let scope = this;
 
-    let fieldnames = ['Angle vs torque', 'Anchor angle (deg)', 'Escape wheel tooth angle (deg)', 'Anchor angular velocity (deg/sec)', 'Anchor angular acceleration (deg/sec^2)', 'Escape wheel angular velocity (deg/sec)', 'Escape wheel angular acceleration (deg/sec^2)', 'Anchor angle integral (deg secs)', 'Anchor torque (Nm)', 'Gravity torque (Nm)'];
-    let fieldvalues = ['xyplot', 'anchorangle', 'escapewheeltoothangle', 'anchorangvel', 'anchorangaccel', 'escapewheelangvel', 'escapewheelangaccel', 'anchorangleintegral', 'anchortorque', 'gravitytorque'];
+    let fieldnames = ['Angle vs torque', 'Anchor angle (deg)', 'Escape wheel tooth angle (deg)', 'Anchor angular velocity (deg/sec)', 'Anchor angular acceleration (deg/sec^2)', 'Escape wheel angular velocity (deg/sec)', 'Escape wheel angular acceleration (deg/sec^2)', 'Anchor angle integral (deg secs)', 'Anchor torque (Nm)', 'Gravity torque (Nm)', 'Torque integral (Nm secs)'];
+    let fieldvalues = ['xyplot', 'anchorangle', 'escapewheeltoothangle', 'anchorangvel', 'anchorangaccel', 'escapewheelangvel', 'escapewheelangaccel', 'anchorangleintegral', 'anchortorque', 'gravitytorque', 'torqueintegral'];
 
     this.div = document.createElement('div');
     this.div.style.border = "solid 1px black";
@@ -337,6 +337,7 @@ Scope.prototype.getValue = function() {
         case 'anchorangleintegral': return anchorAngleIntegral;
         case 'anchortorque': return anchorTorque;
         case 'gravitytorque': return gravityAnchorTorque;
+        case 'torqueintegral': return torqueIntegral;
         case 'xyplot': return [anchor.getAngle()*180/Math.PI, anchorTorque];
     }
     console.log("unrecognised field name: " + this.fieldselect.value);

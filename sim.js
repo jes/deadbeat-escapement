@@ -9,6 +9,9 @@ let rodLength;
 let bobMass;
 let bobRadius;
 
+let anchorAngleIntegral = 0;
+let torqueIntegral = 0;
+
 function setupSimulation(v) {
     Settings.linearSlop = v.majordiameter * 10e-7;
 
@@ -123,6 +126,9 @@ function setupSimulation(v) {
 
     // start off by kicking the pendulum 10 degrees
     anchor.setAngle(v.initialkick*Math.PI/180);
+
+    anchorAngleIntegral = 0;
+    torqueIntegral = 0;
 }
 
 let lastAnchorAngle = 0;
@@ -136,7 +142,6 @@ let anchorMaxAngle = 0;
 let anchorTorque = 0;
 let totalAnchorTorque = 0;
 let gravityAnchorTorque = 0;
-let anchorAngleIntegral = 0;
 
 let ts = 0;
 let period = 0;
@@ -209,6 +214,7 @@ window.setInterval(function() {
             // Odd length - take the middle value
             anchorTorque = anchorTorqueValues[middle];
         }
+        torqueIntegral += anchorTorque * (1/(60*superiters));
         for (let scope of scopes) {
             scope.update(1/(60*superiters));
         }
