@@ -8,12 +8,15 @@ let pivotSeparation;
 let rodLength;
 let bobMass;
 let bobRadius;
+let qfactor;
 
 let anchorAngleIntegral = 0;
 let torqueIntegral = 0;
 
 function setupSimulation(v) {
     Settings.linearSlop = v.majordiameter * 10e-7;
+
+    qfactor = v.qfactor;
 
     world = new World({
         gravity: Vec2(0.0, -9.81),
@@ -183,6 +186,18 @@ function step(dt) {
     
     // Calculate gravitational torque using the angle
     gravityAnchorTorque = bobMass * world.m_gravity.y * rodLength * Math.sin(anchorAngle);
+
+    // Calculate damping torque from Q factor
+    // Q factor is the ratio of energy stored to energy dissipated per radian
+    // For a pendulum with moment of inertia I, the damping coefficient c relates to Q as:
+    // Q = I * ω₀ / c, where ω₀ is the natural frequency
+    let naturalFrequency = Math.sqrt(Math.abs(world.m_gravity.y) / rodLength); // ω₀ = √(g/L)
+    let dampingCoefficient = pendulumMomentOfInertia * naturalFrequency / qfactor;
+    let dampingTorque = -dampingCoefficient * anchorAngularVelocity;
+    totalAnchorTorque -= dampingTorque;
+    
+    // Apply the damping torque to the anchor
+    anchor.applyTorque(dampingTorque, true);
     
     world.step(dt);
 

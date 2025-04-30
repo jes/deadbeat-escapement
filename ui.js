@@ -15,6 +15,7 @@ let defaultParams = {
     // Pendulum
     bobmass: "1.0", // kg
     rodlength: "990", // mm
+    qfactor: "100", // dimensionless
 
     // Simulation
     torque: "0.001", // Nm
