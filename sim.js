@@ -68,14 +68,14 @@ function setupSimulation(v) {
     let lockingAngle = 7; // deg
 
     let entryCornerDistance = Vec2.distance(c, Vec2(0, pivotSeparation));
+    let L = entryCornerDistance - (2*entryCornerDistance*Math.sin((lockingAngle/2)*Math.PI/180)) * Math.tan((v.restingsurfaceangleoffset)*Math.PI/180);
     tlaf = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety+lockingAngle)*Math.PI/180); // radians
-    let gX = entryCornerDistance * Math.sin(tlaf);
-    let gY = pivotSeparation - entryCornerDistance * Math.cos(tlaf);
+    let gX = L * Math.sin(tlaf);
+    let gY = pivotSeparation - L * Math.cos(tlaf);
 
-    let ecd = Vec2.distance(e, Vec2(0, pivotSeparation));
-    tlaf = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety+lockingAngle)*Math.PI/180);
-    let hX = ecd * Math.sin(tlaf);
-    let hY = pivotSeparation - ecd * Math.cos(tlaf);
+    L = entryCornerDistance + (2*entryCornerDistance*Math.sin((lockingAngle/2)*Math.PI/180)) * Math.tan((v.restingsurfaceangleoffset)*Math.PI/180);
+    let hX = L * Math.sin(tlaf);
+    let hY = pivotSeparation - L * Math.cos(tlaf);
 
     let extra = {
         pivotseparation: pivotSeparation,
