@@ -21,32 +21,42 @@ let defaultParams = {
     friction: "0.1",
     maxescapewheelangvel: "720", // deg/sec
     initialkick: "1", // deg
+    noescapement: false,
 };
 let params = defaultParams;
 
-function apply() {
+// Helper function to process parameter values based on their type
+function processParam(value) {
+    if (typeof value === 'boolean') {
+        return value;
+    }
+    return parseFloat(value);
+}
+
+// Common function to update parameters and setup simulation
+function updateParams(sourceParams) {
     params = {};
     for (let key in defaultParams) {
-        if (!defaultParams.hasOwnProperty(key))
-            continue;
-        params[key] = parseFloat(val(key));
+        params[key] = processParam(sourceParams[key]);
     }
     setupSimulation(params);
 }
 
-function reset() {
-    params = {};
+function apply() {
+    const formValues = {};
     for (let key in defaultParams) {
-        params[key] = parseFloat(defaultParams[key]);
+        formValues[key] = val(key);
     }
+    updateParams(formValues);
+}
+
+function reset() {
+    updateParams(defaultParams);
     updateForm();
-    setupSimulation(params);
 }
 
 function updateForm() {
     for (let key in params) {
-        if (!params.hasOwnProperty(key))
-            continue;
         val(key, params[key]);
     }
 }

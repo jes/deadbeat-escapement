@@ -182,7 +182,7 @@ function step(dt) {
     totalAnchorTorque = anchorAngularAcceleration * pendulumMomentOfInertia;
     
     // Calculate gravitational torque using the angle
-    gravityAnchorTorque = bobMass * world.m_gravity.y * rodLength * Math.sin(anchorAngle);
+    gravityAnchorTorque = bobMass * world.m_gravity.y * rodLength * Math.sin(lastAnchorAngle);
     
     world.step(dt);
 

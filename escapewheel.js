@@ -11,6 +11,7 @@ function addEscapeWheelFixtures(body, params) {
         shape: new Circle(params.minordiameter/2000),
         density: 0.001,
         friction: params.friction,
+        filterMaskBits: params.noescapement ? 0 : 1,
     });
 
     let angleStep = 360 / params.teeth;
@@ -19,6 +20,7 @@ function addEscapeWheelFixtures(body, params) {
             shape: generateTooth(i*angleStep*Math.PI/180, params),
             density: 0.001,
             friction: params.friction,
+            filterMaskBits: params.noescapement ? 0 : 1,
         });
     }
 }
