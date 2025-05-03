@@ -22,39 +22,63 @@ function exportSVG() {
     }
     
     // Get the pallet coordinates from the anchor
-    const entryPallet = [
-        [extra.gx, extra.gy],
+    const entryPalletImpulseFace = [
         [extra.cx, extra.cy],
         [extra.dx, extra.dy]
     ];
     
-    const exitPallet = [
-        [extra.hx, extra.hy],
+    const entryPalletRestingFace = [
+        [extra.cx, extra.cy],
+        [extra.gx, extra.gy]
+    ];
+    
+    const exitPalletImpulseFace = [
         [extra.ex, extra.ey],
         [extra.fx, extra.fy]
+    ];
+    
+    const exitPalletRestingFace = [
+        [extra.ex, extra.ey],
+        [extra.hx, extra.hy]
     ];
     
     // Scale factor (convert meters to mm)
     const scale = 1000;
     
+    // Size of the plus markers
+    const plusSize = 1;
+    
     // Create SVG content
     let svgContent = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" viewBox="0 0 210 297">
   <g stroke="black" stroke-width="0.1" fill="none">
-    <!-- Entry Pallet -->
-    <path d="M ${entryPallet[0][0] * scale + 105},${-entryPallet[0][1] * scale + 148.5} 
-             L ${entryPallet[1][0] * scale + 105},${-entryPallet[1][1] * scale + 148.5} 
-             L ${entryPallet[2][0] * scale + 105},${-entryPallet[2][1] * scale + 148.5} 
-             Z" />
+    <!-- Entry Pallet Impulse Face -->
+    <path d="M ${entryPalletImpulseFace[0][0] * scale + 105},${-entryPalletImpulseFace[0][1] * scale + 148.5} 
+             L ${entryPalletImpulseFace[1][0] * scale + 105},${-entryPalletImpulseFace[1][1] * scale + 148.5}" />
     
-    <!-- Exit Pallet -->
-    <path d="M ${exitPallet[0][0] * scale + 105},${-exitPallet[0][1] * scale + 148.5} 
-             L ${exitPallet[1][0] * scale + 105},${-exitPallet[1][1] * scale + 148.5} 
-             L ${exitPallet[2][0] * scale + 105},${-exitPallet[2][1] * scale + 148.5} 
-             Z" />
+    <!-- Entry Pallet Resting Face -->
+    <path d="M ${entryPalletRestingFace[0][0] * scale + 105},${-entryPalletRestingFace[0][1] * scale + 148.5} 
+             L ${entryPalletRestingFace[1][0] * scale + 105},${-entryPalletRestingFace[1][1] * scale + 148.5}" />
     
-    <!-- Pivot point -->
-    <circle cx="${105}" cy="${148.5 - pivotSeparation * scale}" r="0.5" />
+    <!-- Exit Pallet Impulse Face -->
+    <path d="M ${exitPalletImpulseFace[0][0] * scale + 105},${-exitPalletImpulseFace[0][1] * scale + 148.5} 
+             L ${exitPalletImpulseFace[1][0] * scale + 105},${-exitPalletImpulseFace[1][1] * scale + 148.5}" />
+    
+    <!-- Exit Pallet Resting Face -->
+    <path d="M ${exitPalletRestingFace[0][0] * scale + 105},${-exitPalletRestingFace[0][1] * scale + 148.5} 
+             L ${exitPalletRestingFace[1][0] * scale + 105},${-exitPalletRestingFace[1][1] * scale + 148.5}" />
+    
+    <!-- Pivot point (plus sign) -->
+    <path d="M ${105 - plusSize},${148.5 - pivotSeparation * scale} 
+             L ${105 + plusSize},${148.5 - pivotSeparation * scale}" />
+    <path d="M ${105},${148.5 - pivotSeparation * scale - plusSize} 
+             L ${105},${148.5 - pivotSeparation * scale + plusSize}" />
+    
+    <!-- Escape wheel center (plus sign) -->
+    <path d="M ${105 - plusSize},${148.5} 
+             L ${105 + plusSize},${148.5}" />
+    <path d="M ${105},${148.5 - plusSize} 
+             L ${105},${148.5 + plusSize}" />
   </g>
 </svg>`;
     
@@ -70,20 +94,31 @@ function exportDXF() {
     }
     
     // Get the pallet coordinates from the anchor
-    const entryPallet = [
-        [extra.gx, extra.gy],
+    const entryPalletImpulseFace = [
         [extra.cx, extra.cy],
         [extra.dx, extra.dy]
     ];
     
-    const exitPallet = [
-        [extra.hx, extra.hy],
+    const entryPalletRestingFace = [
+        [extra.cx, extra.cy],
+        [extra.gx, extra.gy]
+    ];
+    
+    const exitPalletImpulseFace = [
         [extra.ex, extra.ey],
         [extra.fx, extra.fy]
     ];
     
+    const exitPalletRestingFace = [
+        [extra.ex, extra.ey],
+        [extra.hx, extra.hy]
+    ];
+    
     // Scale factor (convert meters to mm)
     const scale = 1000;
+    
+    // Size of the plus markers
+    const plusSize = 1;
     
     // Create DXF content
     let dxfContent = `0
@@ -100,23 +135,131 @@ ENDSEC
 ENTITIES
 `;
 
-    // Add entry pallet
-    dxfContent += addDxfPolyline(entryPallet, scale);
-    
-    // Add exit pallet
-    dxfContent += addDxfPolyline(exitPallet, scale);
-    
-    // Add pivot point
+    // Add entry pallet impulse face
     dxfContent += `0
-CIRCLE
+LINE
+8
+0
+10
+${entryPalletImpulseFace[0][0] * scale}
+20
+${-entryPalletImpulseFace[0][1] * scale}
+11
+${entryPalletImpulseFace[1][0] * scale}
+21
+${-entryPalletImpulseFace[1][1] * scale}
+0
+`;
+
+    // Add entry pallet resting face
+    dxfContent += `0
+LINE
+8
+0
+10
+${entryPalletRestingFace[0][0] * scale}
+20
+${-entryPalletRestingFace[0][1] * scale}
+11
+${entryPalletRestingFace[1][0] * scale}
+21
+${-entryPalletRestingFace[1][1] * scale}
+0
+`;
+    
+    // Add exit pallet impulse face
+    dxfContent += `0
+LINE
+8
+0
+10
+${exitPalletImpulseFace[0][0] * scale}
+20
+${-exitPalletImpulseFace[0][1] * scale}
+11
+${exitPalletImpulseFace[1][0] * scale}
+21
+${-exitPalletImpulseFace[1][1] * scale}
+0
+`;
+
+    // Add exit pallet resting face
+    dxfContent += `0
+LINE
+8
+0
+10
+${exitPalletRestingFace[0][0] * scale}
+20
+${-exitPalletRestingFace[0][1] * scale}
+11
+${exitPalletRestingFace[1][0] * scale}
+21
+${-exitPalletRestingFace[1][1] * scale}
+0
+`;
+    
+    // Add pivot point (plus sign - horizontal line)
+    dxfContent += `0
+LINE
+8
+0
+10
+${-plusSize}
+20
+${-pivotSeparation * scale}
+11
+${plusSize}
+21
+${-pivotSeparation * scale}
+0
+`;
+
+    // Add pivot point (plus sign - vertical line)
+    dxfContent += `0
+LINE
 8
 0
 10
 0
 20
-${-pivotSeparation * scale}
-40
-0.5
+${-pivotSeparation * scale - plusSize}
+11
+0
+21
+${-pivotSeparation * scale + plusSize}
+0
+`;
+
+    // Add escape wheel center (plus sign - horizontal line)
+    dxfContent += `0
+LINE
+8
+0
+10
+${-plusSize}
+20
+0
+11
+${plusSize}
+21
+0
+0
+`;
+
+    // Add escape wheel center (plus sign - vertical line)
+    dxfContent += `0
+LINE
+8
+0
+10
+0
+20
+${-plusSize}
+11
+0
+21
+${plusSize}
 0
 `;
 
