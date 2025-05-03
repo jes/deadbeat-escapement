@@ -120,8 +120,10 @@ function exportDXF() {
     // Size of the plus markers
     const plusSize = 1;
     
-    // Create DXF content
-    let dxfContent = `0
+    // Begin DXF content
+    let dxfContent = `999
+DXF created by Deadbeat Escapement Simulator
+0
 SECTION
 2
 HEADER
@@ -129,181 +131,162 @@ HEADER
 $ACADVER
 1
 AC1009
+9
+$INSBASE
+10
+0.0
+20
+0.0
+30
+0.0
+9
+$EXTMIN
+10
+-100.0
+20
+-100.0
+30
+0.0
+9
+$EXTMAX
+10
+100.0
+20
+100.0
+30
+0.0
 0
 ENDSEC
+0
+SECTION
+2
+TABLES
+0
+TABLE
+2
+LAYER
+70
+1
+0
+LAYER
+2
+0
+70
+0
+62
+7
+6
+CONTINUOUS
+0
+ENDTAB
+0
+ENDSEC
+0
+SECTION
 2
 ENTITIES
 `;
 
-    // Add entry pallet impulse face
-    dxfContent += `0
+    // Helper function to add a line to DXF - using explicit formatting
+    function addLine(x1, y1, x2, y2) {
+        return `0
 LINE
 8
 0
 10
-${entryPalletImpulseFace[0][0] * scale}
+${x1}
 20
-${-entryPalletImpulseFace[0][1] * scale}
+${y1}
+30
+0.0
 11
-${entryPalletImpulseFace[1][0] * scale}
+${x2}
 21
-${-entryPalletImpulseFace[1][1] * scale}
-0
-`;
-
-    // Add entry pallet resting face
-    dxfContent += `0
-LINE
-8
-0
-10
-${entryPalletRestingFace[0][0] * scale}
-20
-${-entryPalletRestingFace[0][1] * scale}
-11
-${entryPalletRestingFace[1][0] * scale}
-21
-${-entryPalletRestingFace[1][1] * scale}
-0
-`;
-    
-    // Add exit pallet impulse face
-    dxfContent += `0
-LINE
-8
-0
-10
-${exitPalletImpulseFace[0][0] * scale}
-20
-${-exitPalletImpulseFace[0][1] * scale}
-11
-${exitPalletImpulseFace[1][0] * scale}
-21
-${-exitPalletImpulseFace[1][1] * scale}
-0
-`;
-
-    // Add exit pallet resting face
-    dxfContent += `0
-LINE
-8
-0
-10
-${exitPalletRestingFace[0][0] * scale}
-20
-${-exitPalletRestingFace[0][1] * scale}
-11
-${exitPalletRestingFace[1][0] * scale}
-21
-${-exitPalletRestingFace[1][1] * scale}
-0
-`;
-    
-    // Add pivot point (plus sign - horizontal line)
-    dxfContent += `0
-LINE
-8
-0
-10
-${-plusSize}
-20
-${-pivotSeparation * scale}
-11
-${plusSize}
-21
-${-pivotSeparation * scale}
-0
-`;
-
-    // Add pivot point (plus sign - vertical line)
-    dxfContent += `0
-LINE
-8
-0
-10
-0
-20
-${-pivotSeparation * scale - plusSize}
-11
-0
-21
-${-pivotSeparation * scale + plusSize}
-0
-`;
-
-    // Add escape wheel center (plus sign - horizontal line)
-    dxfContent += `0
-LINE
-8
-0
-10
-${-plusSize}
-20
-0
-11
-${plusSize}
-21
-0
-0
-`;
-
-    // Add escape wheel center (plus sign - vertical line)
-    dxfContent += `0
-LINE
-8
-0
-10
-0
-20
-${-plusSize}
-11
-0
-21
-${plusSize}
-0
-`;
-
-    // Close DXF file
-    dxfContent += `ENDSEC
-0
-EOF`;
-    
-    // Create download link
-    downloadFile(dxfContent, "anchor_pallets.dxf", "application/dxf");
-}
-
-// Helper function to add a polyline to DXF
-function addDxfPolyline(points, scale) {
-    let dxf = `0
-POLYLINE
-8
-0
-66
-1
-70
-1
-0
-`;
-
-    // Add vertices
-    for (let i = 0; i < points.length; i++) {
-        dxf += `VERTEX
-8
-0
-10
-${points[i][0] * scale}
-20
-${-points[i][1] * scale}
-0
+${y2}
+31
+0.0
 `;
     }
 
-    // Close polyline
-    dxf += `SEQEND
-0
-`;
+    // Entry pallet impulse face
+    dxfContent += addLine(
+        entryPalletImpulseFace[0][0] * scale,
+        entryPalletImpulseFace[0][1] * scale,
+        entryPalletImpulseFace[1][0] * scale,
+        entryPalletImpulseFace[1][1] * scale
+    );
 
-    return dxf;
+    // Entry pallet resting face
+    dxfContent += addLine(
+        entryPalletRestingFace[0][0] * scale,
+        entryPalletRestingFace[0][1] * scale,
+        entryPalletRestingFace[1][0] * scale,
+        entryPalletRestingFace[1][1] * scale
+    );
+    
+    // Exit pallet impulse face
+    dxfContent += addLine(
+        exitPalletImpulseFace[0][0] * scale,
+        exitPalletImpulseFace[0][1] * scale,
+        exitPalletImpulseFace[1][0] * scale,
+        exitPalletImpulseFace[1][1] * scale
+    );
+
+    // Exit pallet resting face
+    dxfContent += addLine(
+        exitPalletRestingFace[0][0] * scale,
+        exitPalletRestingFace[0][1] * scale,
+        exitPalletRestingFace[1][0] * scale,
+        exitPalletRestingFace[1][1] * scale
+    );
+    
+    // Pivot point (plus sign - horizontal)
+    dxfContent += addLine(
+        -plusSize, 
+        pivotSeparation * scale, 
+        plusSize, 
+        pivotSeparation * scale
+    );
+    
+    // Pivot point (plus sign - vertical)
+    dxfContent += addLine(
+        0, 
+        pivotSeparation * scale - plusSize, 
+        0, 
+        pivotSeparation * scale + plusSize
+    );
+    
+    // Escape wheel center (plus sign - horizontal)
+    dxfContent += addLine(
+        -plusSize, 
+        0, 
+        plusSize, 
+        0
+    );
+    
+    // Escape wheel center (plus sign - vertical)
+    dxfContent += addLine(
+        0, 
+        -plusSize, 
+        0, 
+        plusSize
+    );
+
+    // Close DXF file
+    dxfContent += `0
+ENDSEC
+0
+SECTION
+2
+OBJECTS
+0
+ENDSEC
+0
+EOF
+`;
+    
+    // Create download link
+    downloadFile(dxfContent, "anchor_pallets.dxf", "application/dxf");
 }
 
 // Helper function to download a file
