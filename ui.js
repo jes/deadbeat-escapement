@@ -72,6 +72,8 @@ function addScope() {
 btn('apply', apply);
 btn('reset', reset);
 btn('addscope', addScope);
+btn('exportDxf', exportDXF);
+btn('exportSvg', exportSVG);
 
 addScope();
 

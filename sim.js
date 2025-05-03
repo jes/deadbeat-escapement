@@ -143,6 +143,11 @@ function setupSimulation(v) {
 
     anchorAngleIntegral = 0;
     torqueIntegral = 0;
+
+    // Make extra data available for export
+    if (typeof updateExtraData === 'function') {
+        updateExtraData(extra);
+    }
 }
 
 let lastAnchorAngle = 0;
