@@ -41,41 +41,52 @@ function setupSimulation(v) {
 
     pivotSeparation = aY + bY; // mm
 
-    // upper line of entry pallet
-    let topLineAngleFromVertical = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety)*Math.PI/180); // radians
     let escapeWheelRotationDuringImpulse = (180/v.teeth - v.drop) * Math.PI/180; // radians
-    let bottomLineAngleFromVertical = theta + escapeWheelRotationDuringImpulse / 2; // radians
 
-    let a1 = bottomLineAngleFromVertical;
-    let a2 = topLineAngleFromVertical;
-    // find h where h*tan(a2)=(p-h)*tan(a1)...
-    // h = (p*tan(a1))/(tan(a1)+tan(a2));
-    let h = (pivotSeparation*Math.tan(a1)) / (Math.tan(a1)+Math.tan(a2)); // mm
+    // entry pallet is (c,d,g), exit pallet is (e,f,h);
+    // the entry and exit pallets are arranged so that the impulse faces are approximately symmetric in terms of their distance from the pivot;
+    // that means the resting surface on the entry pallet is further from the pivot and the resting surface on the exit pallet is closer to the pivot;
+    // and the resting surface is tangent to the circle centered on the pivot (+/- restingsurfaceangleoffset) at the corner between the resting and impulse surfaces;
+
+    // point c is the leading corner of the entry pallet
+    let topLineAngleFromVertical = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety)*Math.PI/180); // radians
+    let bottomLineAngleFromVertical = theta + escapeWheelRotationDuringImpulse / 2; // radians
     let c = intersection(bottomLineAngleFromVertical, topLineAngleFromVertical, pivotSeparation);
 
+    // point d is the trailing corner of the entry pallet
     bottomLineAngleFromVertical = theta - escapeWheelRotationDuringImpulse / 2;
     topLineAngleFromVertical = Math.PI/2 - theta - ((v.lift/2+v.locksafety)*Math.PI/180);
     let d = intersection(bottomLineAngleFromVertical, topLineAngleFromVertical, pivotSeparation);
 
-    let blaf = theta - escapeWheelRotationDuringImpulse/2;
-    let tlaf = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety)*Math.PI/180);
-    let e = intersection(blaf, tlaf, pivotSeparation);
+    // point e is the leading corner of the exit pallet
+    bottomLineAngleFromVertical = theta - escapeWheelRotationDuringImpulse / 2;
+    topLineAngleFromVertical = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety)*Math.PI/180);
+    let e = intersection(bottomLineAngleFromVertical, topLineAngleFromVertical, pivotSeparation);
 
-    blaf = theta + escapeWheelRotationDuringImpulse/2;
-    tlaf = (Math.PI/2 - theta) - ((v.lift/2+v.locksafety)*Math.PI/180);
-    let f = intersection(blaf, tlaf, pivotSeparation);
+    // point f is the trailing corner of the exit pallet
+    bottomLineAngleFromVertical = theta + escapeWheelRotationDuringImpulse/2;
+    topLineAngleFromVertical = (Math.PI/2 - theta) - ((v.lift/2+v.locksafety)*Math.PI/180);
+    let f = intersection(bottomLineAngleFromVertical, topLineAngleFromVertical, pivotSeparation);
 
-    let lockingAngle = 7; // deg
+    let restingSurfaceLength = v.restingsurfacelength; // deg
 
+    // point g is the end of the resting surface on the entry pallet
     let entryCornerDistance = Vec2.distance(c, Vec2(0, pivotSeparation));
-    let L = entryCornerDistance - (2*entryCornerDistance*Math.sin((lockingAngle/2)*Math.PI/180)) * Math.tan((v.restingsurfaceangleoffset)*Math.PI/180);
-    tlaf = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety+lockingAngle)*Math.PI/180); // radians
-    let gX = L * Math.sin(tlaf);
-    let gY = pivotSeparation - L * Math.cos(tlaf);
+    let l = 2 * Math.sin(restingSurfaceLength*Math.PI/360) * entryCornerDistance;
+    let theta4 = Math.atan2(c.x, c.y-pivotSeparation);
+    let dX = l * Math.cos(theta4-v.restingsurfaceangleoffset*Math.PI/180);
+    let dY = l * Math.sin(theta4-v.restingsurfaceangleoffset*Math.PI/180);
+    let gX = c.x - dX;
+    let gY = c.y + dY;
 
-    L = entryCornerDistance + (2*entryCornerDistance*Math.sin((lockingAngle/2)*Math.PI/180)) * Math.tan((v.restingsurfaceangleoffset)*Math.PI/180);
-    let hX = L * Math.sin(tlaf);
-    let hY = pivotSeparation - L * Math.cos(tlaf);
+    // point h is the end of the resting surface on the exit pallet
+    entryCornerDistance = Vec2.distance(e, Vec2(0, pivotSeparation));
+    l = 2 * Math.sin(restingSurfaceLength*Math.PI/360) * entryCornerDistance;
+    theta4 = Math.atan2(e.x, e.y-pivotSeparation);
+    dX = l * Math.cos(theta4+v.restingsurfaceangleoffset*Math.PI/180);
+    dY = l * Math.sin(theta4+v.restingsurfaceangleoffset*Math.PI/180);
+    let hX = e.x - dX;
+    let hY = e.y + dY;
 
     let extra = {
         pivotseparation: pivotSeparation,

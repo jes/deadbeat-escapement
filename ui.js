@@ -12,6 +12,7 @@ let defaultParams = {
     drop: "2.0", // deg of escape wheel
     locksafety: "0.25", // deg of anchor
     restingsurfaceangleoffset: "0.0", // deg from tangent
+    restingsurfacelength: "7.0", // deg of anchor
 
     // Pendulum
     bobmass: "1.0", // kg
