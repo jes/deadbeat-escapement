@@ -88,21 +88,21 @@ function setupSimulation(v) {
     let hX = e.x - dX;
     let hY = e.y + dY;
 
+    let entryPallet = new Polygon([
+        Vec2(-gX, gY),
+        Vec2(-c.x, c.y),
+        Vec2(-d.x, d.y),
+    ]);
+    let exitPallet = new Polygon([
+        Vec2(hX, hY),
+        Vec2(e.x, e.y),
+        Vec2(f.x, f.y),
+    ]);
+
     let extra = {
         pivotseparation: pivotSeparation,
-        cx: -c.x,
-        cy: c.y,
-        dx: -d.x,
-        dy: d.y,
-        gx: -gX,
-        gy: gY,
-
-        ex: e.x,
-        ey: e.y,
-        fx: f.x,
-        fy: f.y,
-        hx: hX,
-        hy: hY,
+        entryPallet: entryPallet,
+        exitPallet: exitPallet,
     };
 
     anchor = world.createBody({
