@@ -173,8 +173,6 @@ ${y2}
 LWPOLYLINE
 8
 EntryPallet
-62
-3
 100
 AcDbEntity
 100
@@ -199,8 +197,6 @@ ${vertex.y * scale}
 LWPOLYLINE
 8
 ExitPallet
-62
-1
 100
 AcDbEntity
 100
