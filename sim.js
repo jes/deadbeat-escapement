@@ -14,7 +14,7 @@ let anchorAngleIntegral = 0;
 let torqueIntegral = 0;
 
 function setupSimulation(v) {
-    Settings.linearSlop = v.majordiameter * 10e-7;
+    Settings.linearSlop = v.majordiameter * 10e-8;
 
     qfactor = v.qfactor;
 
@@ -42,30 +42,35 @@ function setupSimulation(v) {
     pivotSeparation = aY + bY; // m
 
     let escapeWheelRotationDuringImpulse = (180/v.teeth - v.drop) * Math.PI/180; // radians
+    
+    // Calculate the tangent angles to the escape wheel at the sector points
+    let tangentSectorAngle = Math.PI/2 - theta;
+    
+    // Calculate the impulse face angles from the tangent
+    let impulseFaceAngleEntryStart = tangentSectorAngle - (v.lift/2 + v.locksafety) * Math.PI/180;
+    let impulseFaceAngleEntryEnd = tangentSectorAngle + (v.lift/2 - v.locksafety) * Math.PI/180;
+    
+    let impulseFaceAngleExitStart = tangentSectorAngle - (v.lift/2 + v.locksafety) * Math.PI/180;
+    let impulseFaceAngleExitEnd = tangentSectorAngle + (v.lift/2 - v.locksafety) * Math.PI/180;
 
-    // entry pallet is (c,d,g), exit pallet is (e,f,h);
-    // the entry and exit pallets are arranged so that the impulse faces are approximately symmetric in terms of their distance from the pivot;
-    // that means the resting surface on the entry pallet is further from the pivot and the resting surface on the exit pallet is closer to the pivot;
-    // and the resting surface is tangent to the circle centered on the pivot (+/- restingsurfaceangleoffset) at the corner between the resting and impulse surfaces;
-
-    // point c is the leading corner of the entry pallet
+    // point c is the leading corner of the entry pallet (end of impulse)
     let bottomLineAngleFromVertical = theta + escapeWheelRotationDuringImpulse / 2; // radians
-    let topLineAngleFromVertical = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety)*Math.PI/180); // radians
+    let topLineAngleFromVertical = impulseFaceAngleEntryEnd; 
     let c = intersection(bottomLineAngleFromVertical, topLineAngleFromVertical, pivotSeparation);
 
-    // point d is the trailing corner of the entry pallet
+    // point d is the trailing corner of the entry pallet (start of impulse)
     bottomLineAngleFromVertical = theta - escapeWheelRotationDuringImpulse / 2;
-    topLineAngleFromVertical = (Math.PI/2 - theta) - ((v.lift/2+v.locksafety)*Math.PI/180);
+    topLineAngleFromVertical = impulseFaceAngleEntryStart;
     let d = intersection(bottomLineAngleFromVertical, topLineAngleFromVertical, pivotSeparation);
 
-    // point e is the leading corner of the exit pallet
+    // point e is the leading corner of the exit pallet (end of impulse)
     bottomLineAngleFromVertical = theta - escapeWheelRotationDuringImpulse / 2;
-    topLineAngleFromVertical = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety)*Math.PI/180);
+    topLineAngleFromVertical = impulseFaceAngleExitEnd;
     let e = intersection(bottomLineAngleFromVertical, topLineAngleFromVertical, pivotSeparation);
 
-    // point f is the trailing corner of the exit pallet
+    // point f is the trailing corner of the exit pallet (start of impulse)
     bottomLineAngleFromVertical = theta + escapeWheelRotationDuringImpulse/2;
-    topLineAngleFromVertical = (Math.PI/2 - theta) - ((v.lift/2+v.locksafety)*Math.PI/180);
+    topLineAngleFromVertical = impulseFaceAngleExitStart;
     let f = intersection(bottomLineAngleFromVertical, topLineAngleFromVertical, pivotSeparation);
 
     let restingSurfaceLength = v.restingsurfacelength; // deg - incorrect except where restingsurfaceangleoffset is 0
