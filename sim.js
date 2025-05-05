@@ -39,7 +39,7 @@ function setupSimulation(v) {
     let bX = 0; // m
     let bY = -aX * Math.tan(theta); // m
 
-    pivotSeparation = aY + bY; // mm
+    pivotSeparation = aY + bY; // m
 
     let escapeWheelRotationDuringImpulse = (180/v.teeth - v.drop) * Math.PI/180; // radians
 
@@ -49,13 +49,13 @@ function setupSimulation(v) {
     // and the resting surface is tangent to the circle centered on the pivot (+/- restingsurfaceangleoffset) at the corner between the resting and impulse surfaces;
 
     // point c is the leading corner of the entry pallet
-    let topLineAngleFromVertical = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety)*Math.PI/180); // radians
     let bottomLineAngleFromVertical = theta + escapeWheelRotationDuringImpulse / 2; // radians
+    let topLineAngleFromVertical = (Math.PI/2 - theta) + ((v.lift/2-v.locksafety)*Math.PI/180); // radians
     let c = intersection(bottomLineAngleFromVertical, topLineAngleFromVertical, pivotSeparation);
 
     // point d is the trailing corner of the entry pallet
     bottomLineAngleFromVertical = theta - escapeWheelRotationDuringImpulse / 2;
-    topLineAngleFromVertical = Math.PI/2 - theta - ((v.lift/2+v.locksafety)*Math.PI/180);
+    topLineAngleFromVertical = (Math.PI/2 - theta) - ((v.lift/2+v.locksafety)*Math.PI/180);
     let d = intersection(bottomLineAngleFromVertical, topLineAngleFromVertical, pivotSeparation);
 
     // point e is the leading corner of the exit pallet
@@ -68,7 +68,7 @@ function setupSimulation(v) {
     topLineAngleFromVertical = (Math.PI/2 - theta) - ((v.lift/2+v.locksafety)*Math.PI/180);
     let f = intersection(bottomLineAngleFromVertical, topLineAngleFromVertical, pivotSeparation);
 
-    let restingSurfaceLength = v.restingsurfacelength; // deg
+    let restingSurfaceLength = v.restingsurfacelength; // deg - incorrect except where restingsurfaceangleoffset is 0
 
     // point g is the end of the resting surface on the entry pallet
     let entryCornerDistance = Vec2.distance(c, Vec2(0, pivotSeparation));
