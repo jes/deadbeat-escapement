@@ -2,24 +2,9 @@
  *  TODO
  */
 function addAnchorFixtures(body, params, extra) {
-    // entry pallet arm
-    /*body.createFixture({
-        shape: new Polygon([
-            Vec2(0.0, extra.pivotseparation),
-            Vec2(-0.21, extra.pivotseparation-0.12),
-            Vec2(-0.19, extra.pivotseparation-0.12),
-            Vec2(0.0, extra.pivotseparation-0.02),
-        ]),
-        density: 0,
-        filterMaskBits: 0,
-    });*/
-
-    let a = 0.02;
-
     // entry pallet
     body.createFixture({
         shape: new Polygon([
-            //Vec2(-0.28, a+extra.pivotseparation-0.12),
             Vec2(extra.gx, extra.gy),
             Vec2(extra.cx, extra.cy),
             Vec2(extra.dx, extra.dy),
@@ -27,17 +12,6 @@ function addAnchorFixtures(body, params, extra) {
         density: 0,
         friction: params.friction,
     });
-
-    // exit pallet arm
-    /*body.createFixture({
-        shape: new Polygon([
-            Vec2(0.0, extra.pivotseparation),
-            Vec2(0.0, extra.pivotseparation-0.02),
-            Vec2(0.21, extra.pivotseparation-0.06),
-            Vec2(0.22, extra.pivotseparation-0.06),
-        ]),
-        density: 0,
-    });*/
 
     // exit pallet
     body.createFixture({
@@ -50,6 +24,7 @@ function addAnchorFixtures(body, params, extra) {
         friction: params.friction,
     });
 
+    // centre of rotation
     body.createFixture({
         shape: new Circle(Vec2(0.0, extra.pivotseparation), params.majordiameter/100000),
         density: 0,
