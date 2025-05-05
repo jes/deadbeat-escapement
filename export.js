@@ -21,26 +21,9 @@ function exportSVG() {
         return;
     }
     
-    // Get the pallet coordinates from the anchor
-    const entryPalletImpulseFace = [
-        [extra.cx, extra.cy],
-        [extra.dx, extra.dy]
-    ];
-    
-    const entryPalletRestingFace = [
-        [extra.cx, extra.cy],
-        [extra.gx, extra.gy]
-    ];
-    
-    const exitPalletImpulseFace = [
-        [extra.ex, extra.ey],
-        [extra.fx, extra.fy]
-    ];
-    
-    const exitPalletRestingFace = [
-        [extra.ex, extra.ey],
-        [extra.hx, extra.hy]
-    ];
+    // Get the pallet objects from extra data
+    const entryPallet = extra.entryPallet;
+    const exitPallet = extra.exitPallet;
     
     // Scale factor (convert meters to mm)
     const scale = 1000;
@@ -52,21 +35,15 @@ function exportSVG() {
     let svgContent = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" viewBox="0 0 210 297">
   <g stroke="black" stroke-width="0.1" fill="none">
-    <!-- Entry Pallet Impulse Face -->
-    <path d="M ${entryPalletImpulseFace[0][0] * scale + 105},${-entryPalletImpulseFace[0][1] * scale + 148.5} 
-             L ${entryPalletImpulseFace[1][0] * scale + 105},${-entryPalletImpulseFace[1][1] * scale + 148.5}" />
+    <!-- Entry Pallet Polygon -->
+    <polygon points="${entryPallet.m_vertices.map(v => 
+        `${v.x * scale + 105},${-v.y * scale + 148.5}`).join(' ')}" 
+        stroke="black" />
     
-    <!-- Entry Pallet Resting Face -->
-    <path d="M ${entryPalletRestingFace[0][0] * scale + 105},${-entryPalletRestingFace[0][1] * scale + 148.5} 
-             L ${entryPalletRestingFace[1][0] * scale + 105},${-entryPalletRestingFace[1][1] * scale + 148.5}" />
-    
-    <!-- Exit Pallet Impulse Face -->
-    <path d="M ${exitPalletImpulseFace[0][0] * scale + 105},${-exitPalletImpulseFace[0][1] * scale + 148.5} 
-             L ${exitPalletImpulseFace[1][0] * scale + 105},${-exitPalletImpulseFace[1][1] * scale + 148.5}" />
-    
-    <!-- Exit Pallet Resting Face -->
-    <path d="M ${exitPalletRestingFace[0][0] * scale + 105},${-exitPalletRestingFace[0][1] * scale + 148.5} 
-             L ${exitPalletRestingFace[1][0] * scale + 105},${-exitPalletRestingFace[1][1] * scale + 148.5}" />
+    <!-- Exit Pallet Polygon -->
+    <polygon points="${exitPallet.m_vertices.map(v => 
+        `${v.x * scale + 105},${-v.y * scale + 148.5}`).join(' ')}" 
+        stroke="black" />
     
     <!-- Pivot point (plus sign) -->
     <path d="M ${105 - plusSize},${148.5 - pivotSeparation * scale} 
@@ -93,26 +70,9 @@ function exportDXF() {
         return;
     }
     
-    // Get the pallet coordinates from the anchor
-    const entryPalletImpulseFace = [
-        [extra.cx, extra.cy],
-        [extra.dx, extra.dy]
-    ];
-    
-    const entryPalletRestingFace = [
-        [extra.cx, extra.cy],
-        [extra.gx, extra.gy]
-    ];
-    
-    const exitPalletImpulseFace = [
-        [extra.ex, extra.ey],
-        [extra.fx, extra.fy]
-    ];
-    
-    const exitPalletRestingFace = [
-        [extra.ex, extra.ey],
-        [extra.hx, extra.hy]
-    ];
+    // Get the pallet objects from extra data
+    const entryPallet = extra.entryPallet;
+    const exitPallet = extra.exitPallet;
     
     // Scale factor (convert meters to mm)
     const scale = 1000;
@@ -208,37 +168,57 @@ ${y2}
 `;
     }
 
-    // Entry pallet impulse face
-    dxfContent += addLine(
-        entryPalletImpulseFace[0][0] * scale,
-        entryPalletImpulseFace[0][1] * scale,
-        entryPalletImpulseFace[1][0] * scale,
-        entryPalletImpulseFace[1][1] * scale
-    );
-
-    // Entry pallet resting face
-    dxfContent += addLine(
-        entryPalletRestingFace[0][0] * scale,
-        entryPalletRestingFace[0][1] * scale,
-        entryPalletRestingFace[1][0] * scale,
-        entryPalletRestingFace[1][1] * scale
-    );
+    // Add entry pallet polygon
+    dxfContent += `0
+LWPOLYLINE
+8
+EntryPallet
+62
+3
+100
+AcDbEntity
+100
+AcDbPolyline
+90
+${entryPallet.m_vertices.length}
+70
+1
+`;
     
-    // Exit pallet impulse face
-    dxfContent += addLine(
-        exitPalletImpulseFace[0][0] * scale,
-        exitPalletImpulseFace[0][1] * scale,
-        exitPalletImpulseFace[1][0] * scale,
-        exitPalletImpulseFace[1][1] * scale
-    );
+    // Add each vertex of entry pallet
+    entryPallet.m_vertices.forEach(vertex => {
+        dxfContent += `10
+${vertex.x * scale}
+20
+${vertex.y * scale}
+`;
+    });
 
-    // Exit pallet resting face
-    dxfContent += addLine(
-        exitPalletRestingFace[0][0] * scale,
-        exitPalletRestingFace[0][1] * scale,
-        exitPalletRestingFace[1][0] * scale,
-        exitPalletRestingFace[1][1] * scale
-    );
+    // Add exit pallet polygon
+    dxfContent += `0
+LWPOLYLINE
+8
+ExitPallet
+62
+1
+100
+AcDbEntity
+100
+AcDbPolyline
+90
+${exitPallet.m_vertices.length}
+70
+1
+`;
+    
+    // Add each vertex of exit pallet
+    exitPallet.m_vertices.forEach(vertex => {
+        dxfContent += `10
+${vertex.x * scale}
+20
+${vertex.y * scale}
+`;
+    });
     
     // Pivot point (plus sign - horizontal)
     dxfContent += addLine(
